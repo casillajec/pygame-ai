@@ -117,44 +117,7 @@
     <span class="nd">@position</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">pos</span>
-        
-<div class="viewcode-block" id="GameObject.update"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick</span><span class="p">,</span> <span class="n">solid_entities_group</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s position and orientation, also handles collision with solid entities</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        </span>
-<span class="sd">        tick: int</span>
-<span class="sd">            Time passed since last loop</span>
-<span class="sd">        solid_entitites_group: :pgsprite:`Group`</span>
-<span class="sd">            A group with the sprites that are considered solid for collision</span>
-<span class="sd">        </span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Move collision somewhere else</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">solid_sprites</span> <span class="o">=</span> <span class="n">solid_entities_group</span><span class="o">.</span><span class="n">sprites</span><span class="p">()</span>
-        <span class="n">list_utils</span><span class="o">.</span><span class="n">remove_if_exists</span><span class="p">(</span><span class="n">solid_sprites</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-        
-        <span class="c1"># Move</span>
-        <span class="n">dx</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tick</span><span class="p">,</span> <span class="mi">0</span>                    <span class="p">])</span>
-        <span class="n">dy</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">([</span><span class="mi">0</span>                    <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tick</span><span class="p">])</span>
-        
-        <span class="c1"># Check for collision</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">spritecollide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solid_sprites</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">-</span><span class="n">dx</span><span class="p">)</span>
-            
-        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">dy</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">spritecollide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solid_sprites</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">-</span><span class="n">dy</span><span class="p">)</span>
-        
-        <span class="c1"># Rotate</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_image</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">))</span>
-        <span class="n">old_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">old_center</span></div>
-        
+
 <div class="viewcode-block" id="GameObject.steer"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.steer">[docs]</a>    <span class="k">def</span> <span class="nf">steer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steering</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s velocity and rotation</span>
 <span class="sd">        </span>
@@ -184,7 +147,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">steering_x</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">steering_x</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">steer</span><span class="p">(</span><span class="n">steering_x</span><span class="p">,</span> <span class="n">tick</span><span class="p">)</span></div>
+        <span class="n">steering_x</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">+=</span> <span class="n">steering_x</span><span class="o">.</span><span class="n">linear</span> <span class="o">*</span> <span class="n">tick</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span></div>
+        <span class="c1">#self.steer(steering_x, tick)</span>
         
 <div class="viewcode-block" id="GameObject.steer_y"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.steer_y">[docs]</a>    <span class="k">def</span> <span class="nf">steer_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steering</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s velocity along the y axis</span>
@@ -196,9 +165,16 @@
 <span class="sd">        tick: int</span>
 <span class="sd">            Time passed since the last loop</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">steering_x</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">steering_x</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">steer</span><span class="p">(</span><span class="n">steering_x</span><span class="p">,</span> <span class="n">tick</span><span class="p">)</span></div>
+        <span class="n">steering_y</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">steering_y</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">steering_y</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">+=</span> <span class="n">steering_y</span><span class="o">.</span><span class="n">linear</span> <span class="o">*</span> <span class="n">tick</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span></div>
+        
+        <span class="c1">#self.steer(steering_y, tick)</span>
         
 <div class="viewcode-block" id="GameObject.steer_angular"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.steer_angular">[docs]</a>    <span class="k">def</span> <span class="nf">steer_angular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steering</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s rotation</span>
@@ -212,7 +188,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">steering_angular</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">steering_angular</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">steering_angular</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">steer</span><span class="p">(</span><span class="n">steering_angular</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steer</span><span class="p">(</span><span class="n">steering_angular</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="GameObject.get_lines"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.get_lines">[docs]</a>    <span class="k">def</span> <span class="nf">get_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reruns what it returns, can you guess what it is? &quot;&quot;&quot;</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">topleft</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">bottomleft</span><span class="p">]</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">topleft</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">topright</span><span class="p">]</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">topright</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">bottomright</span><span class="p">]</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">bottomright</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">bottomleft</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">]</span></div></div>
         
 
 <div class="viewcode-block" id="DummyGameObject"><a class="viewcode-back" href="../gameobject.html#gameobject.DummyGameObject">[docs]</a><span class="k">class</span> <span class="nc">DummyGameObject</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>

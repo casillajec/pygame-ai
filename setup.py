@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 def readme():
     with open('README.rst', 'r') as f:
@@ -18,7 +18,7 @@ setup(
     author = 'Nek',
     author_email = 'nek2712@gmail.com',
     license = 'GLGPL v2.1',
-    packages = ['pygame_ai'],
+    packages = ['pygame_ai'] + ['pygame_ai.' + pkg for pkg in find_packages('pygame_ai')],
     install_requires = [
         'pygame<2'
     ],

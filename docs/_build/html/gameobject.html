@@ -167,13 +167,19 @@ along with other useful classes, methods and constants</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="gameobject.GameObject.get_lines">
+<code class="descname">get_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gameobject.html#GameObject.get_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameobject.GameObject.get_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reruns what it returns, can you guess what it is?</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="gameobject.GameObject.steer">
 <code class="descname">steer</code><span class="sig-paren">(</span><em>steering</em>, <em>tick</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gameobject.html#GameObject.steer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameobject.GameObject.steer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates GameObject’s velocity and rotation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>steering</strong> (<a class="reference internal" href="kinematic.html#steering.kinematic.SteeringOutput" title="steering.kinematic.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code></a> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
+<li><p><strong>steering</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
 <li><p><strong>tick</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Time passed since the last loop</p></li>
 </ul>
 </dd>
@@ -187,7 +193,7 @@ along with other useful classes, methods and constants</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>steering</strong> (<a class="reference internal" href="kinematic.html#steering.kinematic.SteeringOutput" title="steering.kinematic.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code></a> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
+<li><p><strong>steering</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
 <li><p><strong>tick</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Time passed since the last loop</p></li>
 </ul>
 </dd>
@@ -201,7 +207,7 @@ along with other useful classes, methods and constants</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>steering</strong> (<a class="reference internal" href="kinematic.html#steering.kinematic.SteeringOutput" title="steering.kinematic.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code></a> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
+<li><p><strong>steering</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
 <li><p><strong>tick</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Time passed since the last loop</p></li>
 </ul>
 </dd>
@@ -215,29 +221,11 @@ along with other useful classes, methods and constants</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>steering</strong> (<a class="reference internal" href="kinematic.html#steering.kinematic.SteeringOutput" title="steering.kinematic.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code></a> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
+<li><p><strong>steering</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">kinematic.SteeringOutput</span></code> or :py:class:.`static.SteeringOutput`) – The steering request to update velocity and rotation</p></li>
 <li><p><strong>tick</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Time passed since the last loop</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="gameobject.GameObject.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>tick</em>, <em>solid_entities_group</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gameobject.html#GameObject.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gameobject.GameObject.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates GameObject’s position and orientation, also handles collision with solid entities</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tick</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Time passed since last loop</p></li>
-<li><p><strong>solid_entitites_group</strong> (<a class="reference external" href="https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Group">pygame.sprite.Group</a>) – A group with the sprites that are considered solid for collision</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition-todo admonition" id="index-0">
-<p class="admonition-title">Todo</p>
-<p>Move collision somewhere else</p>
-</div>
 </dd></dl>
 
 </dd></dl>

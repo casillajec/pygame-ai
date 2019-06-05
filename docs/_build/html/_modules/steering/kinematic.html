@@ -114,6 +114,10 @@
         <span class="n">selfcopy</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angular</span>
         
         <span class="k">return</span> <span class="n">selfcopy</span>
+        
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
             
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;linear: </span><span class="si">{}</span><span class="s1"> angular: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angular</span><span class="p">)</span>
@@ -123,17 +127,25 @@
      
     <span class="c1"># These might need to be modified</span>
     <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="n">number</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angular</span> <span class="o">*=</span> <span class="n">number</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">new_steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        <span class="n">new_steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">number</span>
+        <span class="n">new_steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angular</span> <span class="o">*</span> <span class="n">number</span>
+        <span class="k">return</span> <span class="n">new_steering</span>
         
     <span class="k">def</span> <span class="nf">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">linear</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angular</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">angular</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
+        <span class="n">new_steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        <span class="n">new_steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">linear</span>
+        <span class="n">new_steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angular</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">angular</span>
+        <span class="k">return</span> <span class="n">new_steering</span>
+        
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">new_steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        <span class="n">new_steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span>
+        <span class="n">new_steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">angular</span>
+        <span class="k">return</span> <span class="n">new_steering</span></div>
 
 <span class="n">null_steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">(</span><span class="n">linear</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
 <span class="sd">&quot;&quot;&quot;:py:class:`SteeringOutput` : Constant with 0 linear acceleration and 0 angular acceleration &quot;&quot;&quot;</span>
@@ -197,7 +209,7 @@
 <span class="sd">        :py:class:`SteeringOutput`</span>
 <span class="sd">            Requested steering</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">null_steering</span></div></div>
+        <span class="k">return</span> <span class="n">null_steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="Seek"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.Seek">[docs]</a><span class="k">class</span> <span class="nc">Seek</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
@@ -214,26 +226,24 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
         
     <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
-        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Output steering</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
-        
         <span class="c1"># Get direction to the target</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span>
         
         <span class="c1"># Velocity is along this direction at full speed</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
         
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
   
         
 <div class="viewcode-block" id="Flee"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.Flee">[docs]</a><span class="k">class</span> <span class="nc">Flee</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
@@ -250,26 +260,23 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
         
     <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span>
         <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Output steering</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
-        
         <span class="c1"># Get direction to the target</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span>
         
         <span class="c1"># Velocity is along this direction at full speed</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
         
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
         
 <div class="viewcode-block" id="Arrive"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.Arrive">[docs]</a><span class="k">class</span> <span class="nc">Arrive</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; :py:class:`KinematicSteeringBehavior` that makes the character **Arrive** at a target</span>
@@ -301,20 +308,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span> <span class="o">=</span> <span class="n">time_to_target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_radius</span> <span class="o">=</span> <span class="n">target_radius</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slow_radius</span> <span class="o">=</span> <span class="n">slow_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
         
     <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
-        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
         <span class="n">pygame</span><span class="o">.</span><span class="n">gfxdraw</span><span class="o">.</span><span class="n">aacircle</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_radius</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">pygame</span><span class="o">.</span><span class="n">gfxdraw</span><span class="o">.</span><span class="n">aacircle</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">slow_radius</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Output steering</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
-        
         <span class="c1"># Direction to target</span>
         <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span>
         <span class="n">distance</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
@@ -325,7 +329,8 @@
         
         <span class="c1"># If we are within target radius, make speed 0</span>
         <span class="k">elif</span> <span class="n">distance</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_radius</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">null_steering</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">null_steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span>
             
         <span class="c1"># Determine &#39;slow&#39; speed based on distance</span>
         <span class="k">else</span><span class="p">:</span>
@@ -338,15 +343,15 @@
             <span class="n">target_velocity</span> <span class="o">*=</span> <span class="n">target_speed</span>
         
         <span class="c1"># Finally, acceleration tries to get to target_velocity</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">target_velocity</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">target_velocity</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span>
         
         <span class="c1"># Clip acceleration</span>
-        <span class="k">if</span> <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span><span class="p">:</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
         
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
         
 <div class="viewcode-block" id="Align"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.Align">[docs]</a><span class="k">class</span> <span class="nc">Align</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; :py:class:`KinematicSteeringBehavior` that makes the character **Align** with the target&#39;s orientation</span>
@@ -371,12 +376,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span> <span class="o">=</span> <span class="n">time_to_target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_radius</span> <span class="o">=</span> <span class="n">target_radius</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slow_radius</span> <span class="o">=</span> <span class="n">slow_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">)):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">get_bound_radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">rect</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">orientation_asvector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">orientation</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span><span class="p">)</span><span class="o">*</span><span class="n">factor</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">BLUE</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Output steering</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        
         <span class="c1"># Get naive direction to target orientation</span>
         <span class="n">rotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">orientation</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">orientation</span>
         
@@ -399,15 +407,15 @@
             <span class="n">target_rotation</span> <span class="o">*=</span> <span class="n">rotation</span> <span class="o">/</span> <span class="n">rotation_size</span>
         
         <span class="c1"># Calculate aprropiate angular accel to reach this rotation</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="n">target_rotation</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">rotation</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="n">target_rotation</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">rotation</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span>
         
         <span class="c1"># Clip if it&#39;s too large</span>
-        <span class="n">angular_accel</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span><span class="p">)</span>
+        <span class="n">angular_accel</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">angular_accel</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_angular_accel</span><span class="p">:</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">/=</span> <span class="n">angular_accel</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_angular_accel</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">/=</span> <span class="n">angular_accel</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_angular_accel</span>
         
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
         
 <div class="viewcode-block" id="VelocityMatch"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.VelocityMatch">[docs]</a><span class="k">class</span> <span class="nc">VelocityMatch</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; :py:class:`KinematicSteeringBehavior` that makes the character match the velocity of the target</span>
@@ -426,27 +434,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span> <span class="o">=</span> <span class="n">time_to_target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
         
     <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
-        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Output steering</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
-        
         <span class="c1"># Acceleration tries to get to the target velocity</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">velocity</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">velocity</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_to_target</span>
         
         <span class="c1"># Clip acceleration if it&#39;s too large</span>
-        <span class="k">if</span> <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span><span class="p">:</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
-            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
         
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
         
 <div class="viewcode-block" id="Pursue"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.Pursue">[docs]</a><span class="k">class</span> <span class="nc">Pursue</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; :py:class:`KinematicSteeringBehavior` that makes the character **Purse** the target</span>
@@ -560,10 +565,13 @@
 <span class="sd">    time_to_target: float, optional</span>
 <span class="sd">        Estimated time, in seconds, to **Face** the target</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_radius</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">slow_radius</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">time_to_target</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_radius</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">slow_radius</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">time_to_target</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">align</span> <span class="o">=</span> <span class="n">Align</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="p">,</span> <span class="n">DummyGameObject</span><span class="p">(),</span> <span class="n">target_radius</span><span class="p">,</span> <span class="n">slow_radius</span><span class="p">,</span> <span class="n">time_to_target</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">draw_indicators</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Calculate target to delegate to Align</span>
@@ -609,7 +617,7 @@
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># If no velocity, return null steering</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">null_steering</span>
+            <span class="k">return</span> <span class="n">null_steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             
         <span class="c1"># Calculate target orientation based on character velocity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">get_angle_from_vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
@@ -644,9 +652,9 @@
 <span class="sd">    align_time: float, optional</span>
 <span class="sd">        Estimated time, in seconds, to **LookWhereYoureGoing**</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">wander_offset</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">wander_radius</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">wander_rate</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-                 <span class="n">align_target_radius</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">align_slow_radius</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">align_time</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
-                 <span class="n">draw</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">wander_offset</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">wander_radius</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">wander_rate</span> <span class="o">=</span> <span class="mi">20</span><span class="p">):</span>
+                 <span class="c1">#align_target_radius = 1, align_slow_radius = 10, align_time = 0.2,</span>
+                 <span class="c1">#draw = True):</span>
                      
         <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wander_offset</span> <span class="o">=</span> <span class="n">wander_offset</span>
@@ -654,7 +662,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">wander_rate</span> <span class="o">=</span> <span class="n">wander_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wander_orientation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">orientation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seek</span> <span class="o">=</span> <span class="n">Seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="p">,</span> <span class="n">DummyGameObject</span><span class="p">())</span>
-        <span class="c1">#self.lwyg = LookWhereYoureGoing(self.character, align_target_radius, align_slow_radius, align_time)</span>
         
     <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
@@ -677,12 +684,7 @@
         
         <span class="c1"># Delegate to seek</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">target_position</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">get_steering</span><span class="p">()</span>
-        <span class="c1"># Delegate to LookWhereYoureGoing</span>
-        <span class="c1">#steering.angular = self.lwyg.get_steering().angular</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
-        
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">get_steering</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="FollowPath"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.FollowPath">[docs]</a><span class="k">class</span> <span class="nc">FollowPath</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
@@ -732,14 +734,10 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="c1">#return negative_steering(self.character.velocity, self.character.rotation)</span>
-                <span class="k">return</span> <span class="n">null_steering</span>
+                <span class="k">return</span> <span class="n">null_steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         
         <span class="c1"># Delegate to Seek</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">get_steering</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
-        
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">get_steering</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Separation"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.Separation">[docs]</a><span class="k">class</span> <span class="nc">Separation</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
@@ -763,22 +761,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">treshold</span> <span class="o">=</span> <span class="n">treshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
         
     <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
-        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
         <span class="n">pygame</span><span class="o">.</span><span class="n">gfxdraw</span><span class="o">.</span><span class="n">aacircle</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">treshold</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Output steering</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
         
         <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+            
             <span class="c1"># Check if target is close</span>
             <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">target</span><span class="o">.</span><span class="n">position</span>
             <span class="n">distance</span> <span class="o">=</span> <span class="n">direction</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
@@ -792,9 +789,9 @@
                 <span class="n">strength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">treshold</span> <span class="o">-</span> <span class="n">distance</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">treshold</span>
                 <span class="c1"># Add the acceleration</span>
                 <span class="n">direction</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
-                <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">+=</span> <span class="n">strength</span> <span class="o">*</span> <span class="n">direction</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">+=</span> <span class="n">strength</span> <span class="o">*</span> <span class="n">direction</span>
                 
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
         
 
 <div class="viewcode-block" id="CollisionAvoidance"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.CollisionAvoidance">[docs]</a><span class="k">class</span> <span class="nc">CollisionAvoidance</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
@@ -826,11 +823,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
         
     <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
-        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">GREEN</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
         
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
         <span class="n">pygame</span><span class="o">.</span><span class="n">gfxdraw</span><span class="o">.</span><span class="n">aacircle</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -840,9 +838,6 @@
             <span class="n">pygame</span><span class="o">.</span><span class="n">gfxdraw</span><span class="o">.</span><span class="n">aacircle</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Output steering</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># Calculate future character pos</span>
         <span class="n">char_future_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
         <span class="n">closest_target</span> <span class="o">=</span> <span class="kc">None</span>
@@ -864,14 +859,15 @@
         
         <span class="c1"># If no target is close enough, return no sterring</span>
         <span class="k">if</span> <span class="n">closest_target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">null_steering</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">null_steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span>
         
         <span class="c1"># Otherwise, calculate avoidance path</span>
         <span class="k">if</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="n">closest_relative_pos</span><span class="p">):</span>
             <span class="n">closest_relative_pos</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">closest_relative_pos</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">closest_relative_pos</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
         
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
         
 
 <div class="viewcode-block" id="ObstacleAvoidance"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.ObstacleAvoidance">[docs]</a><span class="k">class</span> <span class="nc">ObstacleAvoidance</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
@@ -904,7 +900,6 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">,</span> <span class="n">avoid_distance</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">lookahead</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Complete unprovided values</span>
         <span class="k">if</span> <span class="n">lookahead</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1">#lookahead = character.max_speed * 3.5</span>
             <span class="n">lookahead</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math_utils</span><span class="o">.</span><span class="n">get_bound_radius</span><span class="p">(</span><span class="n">character</span><span class="o">.</span><span class="n">rect</span><span class="p">)</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
             
         <span class="k">if</span> <span class="n">avoid_distance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -966,7 +961,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">closest_intersection</span> <span class="o">=</span> <span class="n">closest_intersection</span>
         <span class="c1"># If there was no collision return null steering</span>
         <span class="k">if</span> <span class="n">closest_intersection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">null_steering</span>
+            <span class="k">return</span> <span class="n">null_steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         
         <span class="c1"># Otherwise, calculate target to delegate to Seek</span>
         <span class="c1"># Get RHS and LHS perpendicular points and see which is closer </span>
@@ -989,9 +984,24 @@
     <span class="sd">&quot;&quot;&quot; :py:class:`KinematicSteeringBehavior` that makes the character **Stay Still** &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">null_steering</span></div>
+        <span class="k">return</span> <span class="n">null_steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
         
+<span class="k">class</span> <span class="nc">Stationary</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
+        
+        <span class="k">if</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
+            
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span>
 
+        
 <div class="viewcode-block" id="Drag"><a class="viewcode-back" href="../../kinematic.html#steering.kinematic.Drag">[docs]</a><span class="k">class</span> <span class="nc">Drag</span><span class="p">(</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; :py:class:`KinematicSteeringBehavior` that applies a **Drag** to the character</span>
 <span class="sd">    </span>
@@ -1002,24 +1012,39 @@
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    character: :py:class:`~gameobject.GameObject`</span>
-<span class="sd">        Character with this behavior</span>
 <span class="sd">    strenght: float, optional</span>
 <span class="sd">        The strength of the drag to apply, should be a number in the</span>
 <span class="sd">        range (0, 1], any number outside of that range will have </span>
 <span class="sd">        unexpected behavior.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">strength</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="n">strength</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linear_strength</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">angular_strength</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear_strength</span> <span class="o">=</span> <span class="n">linear_strength</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angular_strength</span> <span class="o">=</span> <span class="n">angular_strength</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
         
-    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">strength</span><span class="p">)</span>
-        <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">rotation</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">strength</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns steering with a character&#39;s drag</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        character: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         
-        <span class="k">return</span> <span class="n">steering</span></div>
+        <span class="k">if</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span><span class="p">):</span>
+            <span class="n">linear_direction</span> <span class="o">=</span> <span class="o">-</span><span class="n">character</span><span class="o">.</span><span class="n">velocity</span>
+            <span class="n">linear_direction</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">linear_direction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_strength</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">character</span><span class="o">.</span><span class="n">rotation</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">angular_direction</span> <span class="o">=</span> <span class="o">-</span><span class="n">character</span><span class="o">.</span><span class="n">rotation</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">character</span><span class="o">.</span><span class="n">rotation</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">=</span> <span class="n">angular_direction</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">angular_strength</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">steering</span></div>
 </pre></div>
 
           </div>

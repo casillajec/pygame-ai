@@ -71,6 +71,7 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">kinematic</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">blended</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">path</span>
 
 
 <div class="viewcode-block" id="PrioritySteering"><a class="viewcode-back" href="../../priority.html#steering.priority.PrioritySteering">[docs]</a><span class="k">class</span> <span class="nc">PrioritySteering</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
@@ -99,6 +100,24 @@
         <span class="c1"># If we get here, no output surpased the treshold</span>
         <span class="c1"># Return the last group&#39;s steering as small as it is</span>
         <span class="k">return</span> <span class="n">steering</span></div></div>
+        
+<span class="k">class</span> <span class="nc">OscilateHorizontally</span><span class="p">(</span><span class="n">PrioritySteering</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">solid_entities</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">160</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">start_x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        
+        <span class="k">def</span> <span class="nf">mypath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span> <span class="o">-</span> <span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">height</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">height</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        
+        <span class="n">hpath</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">MirroredPath</span><span class="p">(</span><span class="n">mypath</span><span class="p">,</span> <span class="n">domain_end</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">hpath</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">position</span>
+        <span class="n">hpath</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">start_x</span>
+        <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">kinematic</span><span class="o">.</span><span class="n">CollisionAvoidance</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">solid_entities</span><span class="p">),</span>
+            <span class="n">kinematic</span><span class="o">.</span><span class="n">FollowPath</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">hpath</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OscilateHorizontally</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">behaviors</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
 
 </pre></div>
 

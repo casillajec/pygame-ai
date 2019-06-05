@@ -177,7 +177,7 @@
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">swarm</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">Separation</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">swarm</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">Separation</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">swarm</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
             <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">Arrive</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
             <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">LookWhereYoureGoing</span><span class="p">(</span><span class="n">character</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">]</span>
@@ -227,11 +227,11 @@
 <span class="sd">        Solid obstacles</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">,</span> <span class="n">target_radius</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">slow_radius</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
             <span class="c1"># Arrive</span>
             <span class="n">BehaviorAndWeight</span><span class="p">(</span>
-                <span class="n">kinematic</span><span class="o">.</span><span class="n">Arrive</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">Arrive</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target_radius</span><span class="p">,</span> <span class="n">slow_radius</span><span class="p">),</span>
                 <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
             <span class="c1"># ObstacleAvoidance    </span>
             <span class="n">BehaviorAndWeight</span><span class="p">(</span>
