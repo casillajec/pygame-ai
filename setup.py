@@ -20,7 +20,7 @@ setup(
     license = 'GLGPL v2.1',
     packages = ['pygame_ai'],
     install_requires = [
-        'pygame'
+        'pygame<2'
     ],
     include_package_data = True,
     zip_safe = False
