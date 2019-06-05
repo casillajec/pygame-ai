@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>steering.priority &#8212; Pygame AI 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for steering.priority</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Priority Steering Behaviors</span>
+
+<span class="sd">This module implements a class that holds a list of</span>
+<span class="sd">:py:class:`~.kinematic.KinematicSteeringBehavior`\ s and applies them in order,</span>
+<span class="sd">keeping only the first one that produces an output greater than a certain</span>
+<span class="sd">treshold. This means that some behaviors which are considered more important</span>
+<span class="sd">(like :py:class:`~.kinematic.ObstacleAvoidance` and </span>
+<span class="sd">:py:class:`~.kinematic.CollisionAvoidance`) but are not always neccesary </span>
+<span class="sd">to reach the character&#39;s goal can be ignored when they don&#39;t produce a </span>
+<span class="sd">meaningful output, it also means that when they do produce a meaningful </span>
+<span class="sd">output they will be the only ones in action.</span>
+
+<span class="sd">This is a very simple form of decision making that involves only steering</span>
+<span class="sd">algorithms, and therefore it is classified as a steering behavior.</span>
+
+<span class="sd">Derives from :py:class:`~.kinematic.KinematicSteeringBehavior`.</span>
+
+
+<span class="sd">Example</span>
+<span class="sd">--------</span>
+
+<span class="sd">This is how you would normally create your own :py:class:`~PrioritySteering`\ ,</span>
+<span class="sd">in this case we are making a behavior that will most of the time **Pursue**</span>
+<span class="sd">a target, but will prioritize **Avoiding Obstacles** when that behavior</span>
+<span class="sd">returns a steering greater than the treshold.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    mybehavior = PrioritySteering(</span>
+<span class="sd">        behaviors = [</span>
+<span class="sd">            kinematic.ObstacleAvoidance(character, obstacles),</span>
+<span class="sd">            kinematic.Pursue(character, target),</span>
+<span class="sd">        ],</span>
+<span class="sd">    )</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">kinematic</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">blended</span>
+
+
+<div class="viewcode-block" id="PrioritySteering"><a class="viewcode-back" href="../../priority.html#steering.priority.PrioritySteering">[docs]</a><span class="k">class</span> <span class="nc">PrioritySteering</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">behaviors</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">behaviors</span> <span class="o">=</span> <span class="n">behaviors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;PrioritySteering &#39;</span><span class="o">+</span><span class="nb">super</span><span class="p">(</span><span class="n">PrioritySteering</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="PrioritySteering.draw_indicators"><a class="viewcode-back" href="../../priority.html#steering.priority.PrioritySteering.draw_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">behavior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">behaviors</span><span class="p">:</span>
+            <span class="n">behavior</span><span class="o">.</span><span class="n">draw_indicators</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="PrioritySteering.get_steering"><a class="viewcode-back" href="../../priority.html#steering.priority.PrioritySteering.get_steering">[docs]</a>    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="k">for</span> <span class="n">behavior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">behaviors</span><span class="p">:</span>
+            <span class="c1"># Get behavior&#39;s steering</span>
+            <span class="n">steering</span> <span class="o">=</span> <span class="n">behavior</span><span class="o">.</span><span class="n">get_steering</span><span class="p">()</span>
+            
+            <span class="c1"># If any of it&#39;s components surpases the treshold, return it</span>
+            <span class="k">if</span> <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">angular</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">steering</span>
+                
+        <span class="c1"># If we get here, no output surpased the treshold</span>
+        <span class="c1"># Return the last group&#39;s steering as small as it is</span>
+        <span class="k">return</span> <span class="n">steering</span></div></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Pygame AI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gameobject.html">Game Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../static.html">Static</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../kinematic.html">Kinematic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blended.html">Blended</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../priority.html">Priority</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../path.html">Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_game.html">Example Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide.html">Pygame AI Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Nek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

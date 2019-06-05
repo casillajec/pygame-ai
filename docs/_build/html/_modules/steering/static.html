@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>steering.static &#8212; Pygame AI 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for steering.static</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Static movement</span>
+
+<span class="sd">This module implements a series of classes and methods that emulate</span>
+<span class="sd">the behavior of objects moving in a 2D space in a static way</span>
+<span class="sd">(not involving acceleration)</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+<span class="sd">    This might need a slightly better explaination</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">import</span> <span class="nn">pygame</span>
+
+<span class="kn">from</span> <span class="nn">pygame_ai.utils</span> <span class="k">import</span> <span class="n">math_utils</span>
+
+<div class="viewcode-block" id="SteeringOutput"><a class="viewcode-back" href="../../static.html#steering.static.SteeringOutput">[docs]</a><span class="k">class</span> <span class="nc">SteeringOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Container for Steering data</span>
+<span class="sd">    </span>
+<span class="sd">    This class is used as a container for the  output of the </span>
+<span class="sd">    :py:class:`~StaticSteeringBehavior` algorithms.</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    velocity : :pgmath:`Vector2`, optional</span>
+<span class="sd">        Linear velocity, defaults to (0, 0)</span>
+<span class="sd">    rotation : int, optional</span>
+<span class="sd">        Angular velocity, defaults to 0</span>
+<span class="sd">        </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    velocity : :pgmath:`Vector2`</span>
+<span class="sd">        Linear velocity</span>
+<span class="sd">    rotation : int</span>
+<span class="sd">        Angular velocity</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rotation</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">velocity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">velocity</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">velocity</span>
+        <span class="k">if</span> <span class="n">rotation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="n">rotation</span>
+        
+<div class="viewcode-block" id="SteeringOutput.update"><a class="viewcode-back" href="../../static.html#steering.static.SteeringOutput.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gameobject</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update a :py:class:`~gameobject.GameObject`&#39;s velocity and rotation</span>
+<span class="sd">        </span>
+<span class="sd">        This method should be called once per loop, it updates the given </span>
+<span class="sd">        :py:class:`gameobject.GameObject`&#39;s velocity and rotation based </span>
+<span class="sd">        on this :py:class:`~SteeringOutput`&#39;s acceleration request</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gameobject : :py:class:`~gameobject.GameObject`</span>
+<span class="sd">            The :py:class:`GameObject` that will be updated</span>
+<span class="sd">        tick : int</span>
+<span class="sd">            Time transcurred since last loop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gameobject</span><span class="o">.</span><span class="n">velocity</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">*</span> <span class="n">tick</span>
+        <span class="n">gameobject</span><span class="o">.</span><span class="n">rotation</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">*</span> <span class="n">tick</span>
+        
+        <span class="k">if</span> <span class="n">gameobject</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">gameobject</span><span class="o">.</span><span class="n">max_speed</span><span class="p">:</span>
+            <span class="n">gameobject</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="n">gameobject</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*=</span> <span class="n">gameobject</span><span class="o">.</span><span class="n">max_speed</span></div></div>
+        
+<span class="n">null_steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">(</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;:py:class:`SteeringOutput` : Constant with 0 linear velocity and 0 angular velocity &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StaticSteeringBehavior"><a class="viewcode-back" href="../../static.html#steering.static.StaticSteeringBehavior">[docs]</a><span class="k">class</span> <span class="nc">StaticSteeringBehavior</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Template StaticSteeringBehavior class</span>
+<span class="sd">    </span>
+<span class="sd">    This class is a template to supply base methods for StaticSteeringBehaviors.</span>
+<span class="sd">    This class is meant to be subclassed since the methods here are just placeholders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; If not overriden, returns class name &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+    
+<div class="viewcode-block" id="StaticSteeringBehavior.draw_indicators"><a class="viewcode-back" href="../../static.html#steering.static.StaticSteeringBehavior.draw_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot; Draws appropiate indicators for each :py:class:`~StaticSteeringBehavior`</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        screen: :pgsurf:`Surface`</span>
+<span class="sd">            Surface in which to draw indicators, normally this would be the screen Surface</span>
+<span class="sd">        offset: function, optional</span>
+<span class="sd">            Function that applies an offset to the object&#39;s position</span>
+<span class="sd">            </span>
+<span class="sd">            This is meant to be used together with scrolling cameras,</span>
+<span class="sd">            leave empty if your game doesn&#39;t implement one,it defaults </span>
+<span class="sd">            to a linear function f(pos) -&gt; pos</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="StaticSteeringBehavior.get_steering"><a class="viewcode-back" href="../../static.html#steering.static.StaticSteeringBehavior.get_steering">[docs]</a>    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a steering request</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        </span>
+<span class="sd">        :py:class:`SteeringOutput`</span>
+<span class="sd">            Requested steering</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">null_steering</span></div></div>
+
+<div class="viewcode-block" id="Seek"><a class="viewcode-back" href="../../static.html#steering.static.Seek">[docs]</a><span class="k">class</span> <span class="nc">Seek</span><span class="p">(</span><span class="n">StaticSteeringBehavior</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~StaticSteeringBehavior` that makes the character **Seek** a target</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Character with this behavior</span>
+<span class="sd">    target: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Target to **Seek**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        
+    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Create structure for output</span>
+        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        
+        <span class="c1"># Get direction to the target</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span>
+        <span class="c1"># Velocity is along this direction at full speed</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_speed</span>
+        <span class="c1"># Face in the direction of velocity</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">get_angle_from_vector</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+        
+        <span class="c1"># Return the steering</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">steering</span></div>
+        
+<div class="viewcode-block" id="Flee"><a class="viewcode-back" href="../../static.html#steering.static.Flee">[docs]</a><span class="k">class</span> <span class="nc">Flee</span><span class="p">(</span><span class="n">StaticSteeringBehavior</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~StaticSteeringBehavior` that makes the character **Flee** from a target</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Character with this behavior</span>
+<span class="sd">    target: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Target to **Flee** from</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        
+    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="c1"># Create structure for output</span>
+        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        
+        <span class="c1"># Get direction to the target</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span>
+        <span class="c1"># Velocity is along this direction at full speed</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_speed</span>
+        <span class="c1"># Face in the direction of velocity</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">get_angle_from_vector</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+        
+        <span class="c1"># Return the steering</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">steering</span></div>
+        
+<div class="viewcode-block" id="Arrive"><a class="viewcode-back" href="../../static.html#steering.static.Arrive">[docs]</a><span class="k">class</span> <span class="nc">Arrive</span><span class="p">(</span><span class="n">StaticSteeringBehavior</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~StaticSteeringBehavior` that makes the character **Arrive** at a target</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Character with this behavior</span>
+<span class="sd">    target: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Target to **Arrive** at</span>
+<span class="sd">    radius: int, optional</span>
+<span class="sd">        Distance from the center of the target at which the character will stop</span>
+<span class="sd">    time_to_arrive: float, optional</span>
+<span class="sd">        Estimated time, in seconds, to **Arrive** at the target</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">time_to_arrive</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">):</span>
+        <span class="c1"># Complete unprovided values</span>
+        <span class="k">if</span> <span class="n">radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">radius</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">target</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mf">1.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_to_arrive</span> <span class="o">=</span> <span class="n">time_to_arrive</span>
+        
+    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Create structure for output</span>
+        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        
+        <span class="c1"># Get direction to the target</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">position</span>
+        <span class="c1"># Check if we&#39;re within radius</span>
+        <span class="k">if</span> <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">null_steering</span>
+            
+        <span class="c1"># Clip to get there in time_to_arrive</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_to_arrive</span>
+        
+        <span class="c1"># If it is too fast, clip it to character&#39;s speed</span>
+        <span class="k">if</span> <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_speed</span><span class="p">:</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_speed</span>
+            
+        <span class="c1"># Face in the direction of velocity</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">math_utils</span><span class="o">.</span><span class="n">is_not_null</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">get_angle_from_vector</span><span class="p">(</span><span class="n">steering</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+        
+        <span class="c1"># Return the steering</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">return</span> <span class="n">steering</span></div>
+        
+<div class="viewcode-block" id="Wander"><a class="viewcode-back" href="../../static.html#steering.static.Wander">[docs]</a><span class="k">class</span> <span class="nc">Wander</span><span class="p">(</span><span class="n">StaticSteeringBehavior</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~StaticSteeringBehavior` that makes the character **Wander**</span>
+<span class="sd">     </span>
+<span class="sd">    This behavior makes the character move with it&#39;s maximum speed in a </span>
+<span class="sd">    particular direction for a random period of time, after that the</span>
+<span class="sd">    character&#39;s orientation is changed randomly using the character&#39;s</span>
+<span class="sd">    :py:attr:`~gameobject.GameObject.max_rotation`.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Character with this behavior</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_timer</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Output steering</span>
+        <span class="n">steering</span> <span class="o">=</span> <span class="n">SteeringOutput</span><span class="p">()</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="c1"># Get velocity from orientation</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">math_utils</span><span class="o">.</span><span class="n">orientation_asvector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">orientation</span><span class="p">)</span>
+        <span class="n">steering</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_speed</span>
+        
+        <span class="c1"># Change orientation randomly after random amount of iterations</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_timer</span><span class="p">):</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_rotation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_timer</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">return</span> <span class="n">steering</span></div>
+        
+        
+        
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Pygame AI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gameobject.html">Game Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../static.html">Static</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../kinematic.html">Kinematic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blended.html">Blended</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../priority.html">Priority</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../path.html">Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_game.html">Example Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide.html">Pygame AI Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Nek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

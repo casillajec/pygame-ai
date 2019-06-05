@@ -1,0 +1,54 @@
+Kinematic
+=====================================
+
+.. automodule:: steering.kinematic
+
+    SteeringOutput
+    --------------
+    
+    .. autoclass:: SteeringOutput
+        :members:
+        
+    .. automethod:: steering.kinematic.negative_steering
+        
+    .. autodata:: null_steering
+        :annotation:
+        
+    KinematicSteeringBehavior
+    -------------------------
+    
+    .. autoclass:: KinematicSteeringBehavior
+        :members:
+        
+    .. autoclass:: Align
+    
+    .. autoclass:: Arrive
+    
+    .. autoclass:: CollisionAvoidance
+    
+    .. autoclass:: Drag
+    
+    .. autoclass:: Evade
+    
+    .. autoclass:: Face
+    
+    .. autoclass:: Flee
+    
+    .. autoclass:: FollowPath
+    
+    .. autoclass:: LookWhereYoureGoing
+    
+    .. autoclass:: NullSteering
+    
+    .. autoclass:: ObstacleAvoidance
+    
+    .. autoclass:: Pursue
+    
+    .. autoclass:: Seek
+    
+    .. autoclass:: Separation
+    
+    .. autoclass:: VelocityMatch
+    
+    .. autoclass:: Wander
+    

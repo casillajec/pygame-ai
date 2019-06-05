@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>steering.path &#8212; Pygame AI 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for steering.path</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Iterator that describes a Path</span>
+
+<span class="sd">This module implements an iterator :py:class:`~.path.Path` to be used the </span>
+<span class="sd">descriptions of the points that form a particular path. There are also </span>
+<span class="sd">the following classes with specialised paths:</span>
+
+<span class="sd">    * :py:class:`~.path.CyclicPath`</span>
+<span class="sd">    * :py:class:`~.path.MirroredPath`</span>
+<span class="sd">    </span>
+<span class="sd">Aswell as the following pre-implemented useful paths:</span>
+
+<span class="sd">    * :py:class:`~.path.PathCircumference`</span>
+<span class="sd">    * :py:class:`~.path.PathParabola`</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<div class="viewcode-block" id="Path"><a class="viewcode-back" href="../../path.html#steering.path.Path">[docs]</a><span class="k">class</span> <span class="nc">Path</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Iterator that describes a **Path**</span>
+<span class="sd">    </span>
+<span class="sd">    Provides a flexible interface to describe dynamic paths as an iterator,</span>
+<span class="sd">    it uses a **Path Function** in the form of f(x) = y to describe</span>
+<span class="sd">    the path.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path_func: function number -&gt; number</span>
+<span class="sd">        The function that describes the path</span>
+<span class="sd">    domain_start: int</span>
+<span class="sd">        Start point for the function domain, defaults to 0</span>
+<span class="sd">    domain_end: int</span>
+<span class="sd">        End point for the function domain</span>
+<span class="sd">    increment: int</span>
+<span class="sd">        Step to generate every point on the path</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    The way this class is meant to be used is by sub-classing it and creating</span>
+<span class="sd">    your own class with your own properties, this is a slightly useluess</span>
+<span class="sd">    implementation of :py:class:`~.path.CircumferencePath` that only</span>
+<span class="sd">    traverses the path once.</span>
+<span class="sd">    </span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">    </span>
+<span class="sd">        class OnceCircumferencePath(Path):</span>
+<span class="sd">        </span>
+<span class="sd">            def __init__(self, center, radius):</span>
+<span class="sd">                self.center = center</span>
+<span class="sd">                self.radius = radius</span>
+<span class="sd">    </span>
+<span class="sd">                def circumference_path(self, x):</span>
+<span class="sd">                    angle = math.radians(x)</span>
+<span class="sd">                    center = self.center</span>
+<span class="sd">                    x = center[0] + math.cos(angle)*self.radius</span>
+<span class="sd">                    y = center[1] + math.sin(angle)*self.radius</span>
+<span class="sd">                    return x, y</span>
+<span class="sd">                    </span>
+<span class="sd">                super(OnceCircumferencePath, self).__init__(parabola_path, domain_start = 0, domain_end = 360, increment = 15)</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; mypath = OnceCircumferencePath(center = (50, 50), radius = 50)</span>
+<span class="sd">        &gt;&gt;&gt; next(mypath)</span>
+<span class="sd">        (100.0, 50.0)</span>
+<span class="sd">        &gt;&gt;&gt; next(mypath)</span>
+<span class="sd">        (98.29629131445341, 62.940952255126035)</span>
+<span class="sd">        &gt;&gt;&gt; next(mypath)</span>
+<span class="sd">        (93.30127018922194, 75.0)</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    A good tip is to use lambda functions in order to have dynamically</span>
+<span class="sd">    updated paths, this allows to have attributes like &#39;center&#39; update</span>
+<span class="sd">    with the position of something in the game, which will alter</span>
+<span class="sd">    the points the path will produce</span>
+<span class="sd">    </span>
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">    </span>
+<span class="sd">        class OnceCircumferencePath(Path):</span>
+<span class="sd">        </span>
+<span class="sd">            def __init__(self, center, radius):</span>
+<span class="sd">                self.center = center</span>
+<span class="sd">                self.radius = radius</span>
+<span class="sd">    </span>
+<span class="sd">                def circumference_path(self, x):</span>
+<span class="sd">                    angle = math.radians(x)</span>
+<span class="sd">                    # Notice that we are now calling the attribute &#39;center&#39; as a function</span>
+<span class="sd">                    center = self.center()</span>
+<span class="sd">                    x = center[0] + math.cos(angle)*self.radius</span>
+<span class="sd">                    y = center[1] + math.sin(angle)*self.radius</span>
+<span class="sd">                    return x, y</span>
+<span class="sd">                    </span>
+<span class="sd">                super(OnceCircumferencePath, self).__init__(parabola_path, domain_start = 0, domain_end = 360, increment = 15)</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; character = SomeGameObjectWithARect()</span>
+<span class="sd">        # The &#39;center&#39; parameter is now defined as a lambda functions that gets the position of a character</span>
+<span class="sd">        &gt;&gt;&gt; mypath = OnceCircumferencePath(center = (lambda: character.rect.center), radius = 50)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_func</span><span class="p">,</span> <span class="n">domain_end</span><span class="p">,</span> <span class="n">domain_start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">increment</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_func</span> <span class="o">=</span> <span class="n">path_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="n">increment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="n">increment</span> <span class="o">+</span> <span class="n">domain_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain_start</span> <span class="o">=</span> <span class="n">domain_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span> <span class="o">=</span> <span class="n">domain_end</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="kc">None</span>
+        
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+        
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+            
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Function Path&#39;</span>
+        
+<div class="viewcode-block" id="Path.reset"><a class="viewcode-back" href="../../path.html#steering.path.Path.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the iterator to it&#39;s initial point &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_start</span></div>
+        
+<div class="viewcode-block" id="Path.as_list"><a class="viewcode-back" href="../../path.html#steering.path.Path.as_list">[docs]</a>    <span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the path as a list of points</span>
+<span class="sd">        </span>
+<span class="sd">        This ignores the infinity of :py:class:`~.path.CyclicPath`</span>
+<span class="sd">        and :py:class:`~.path.MirroredPath` and returns a finite list.</span>
+<span class="sd">        Nevertheless, you should keep in mind that if for your own</span>
+<span class="sd">        sub-classes this methods does not return the expected results,</span>
+<span class="sd">        it&#39;s probabbly the method&#39;s fault (my faul) and you should</span>
+<span class="sd">        implement your own since this is used for drawing indicators.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            list(tuple(float, float))</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path_list</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span><span class="p">):</span>
+            <span class="n">path_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            
+        <span class="k">return</span> <span class="n">path_list</span></div></div>
+        
+        
+<div class="viewcode-block" id="CyclicPath"><a class="viewcode-back" href="../../path.html#steering.path.CyclicPath">[docs]</a><span class="k">class</span> <span class="nc">CyclicPath</span><span class="p">(</span><span class="n">Path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Iterator that implements Cyclic Paths</span>
+<span class="sd">    </span>
+<span class="sd">    This is a sub-class of :py:class:`~.Path` that returns to the path&#39;s</span>
+<span class="sd">    starting point once it reaches the end, this produces an infinite</span>
+<span class="sd">    iterator.</span>
+<span class="sd">    </span>
+<span class="sd">    Uses the same parameters as :py:class:`~.Path`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_func</span><span class="p">,</span> <span class="n">domain_end</span><span class="p">,</span> <span class="n">domain_start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">increment</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CyclicPath</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path_func</span><span class="p">,</span> <span class="n">domain_end</span><span class="p">,</span> <span class="n">domain_start</span><span class="p">,</span> <span class="n">increment</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">CyclicPath</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span></div>
+        
+        
+<div class="viewcode-block" id="MirroredPath"><a class="viewcode-back" href="../../path.html#steering.path.MirroredPath">[docs]</a><span class="k">class</span> <span class="nc">MirroredPath</span><span class="p">(</span><span class="n">Path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Iterator that implements Mirrored Paths</span>
+<span class="sd">    </span>
+<span class="sd">    This is a sub-class of :py:class:`~.Path` that **Mirrors** the </span>
+<span class="sd">    path produced by the given function, this produces an infinite</span>
+<span class="sd">    iterator that backtracks on the traversed path once it reaches</span>
+<span class="sd">    it&#39;s domain_end, and does the same after it reaches domain_start.</span>
+<span class="sd">    </span>
+<span class="sd">    Uses the same parameters as :py:class:`~.Path`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_func</span><span class="p">,</span> <span class="n">domain_end</span><span class="p">,</span> <span class="n">domain_start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">increment</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MirroredPath</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path_func</span><span class="p">,</span> <span class="n">domain_end</span><span class="p">,</span> <span class="n">domain_start</span><span class="p">,</span> <span class="n">increment</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">increment</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="MirroredPath.as_list"><a class="viewcode-back" href="../../path.html#steering.path.MirroredPath.as_list">[docs]</a>    <span class="k">def</span> <span class="nf">as_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path_list</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">f_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_start</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span><span class="p">)</span>
+            
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f_range</span><span class="p">:</span>
+                <span class="n">path_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            
+        <span class="k">return</span> <span class="n">path_list</span></div></div>
+            
+    
+<div class="viewcode-block" id="PathCircumference"><a class="viewcode-back" href="../../path.html#steering.path.PathCircumference">[docs]</a><span class="k">class</span> <span class="nc">PathCircumference</span><span class="p">(</span><span class="n">CyclicPath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Circumference-like :py:class:`~.CyclicPath`</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    center: tuple(int, int) or function -&gt; tuple(int, int)</span>
+<span class="sd">    radius: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">center</span><span class="p">):</span>
+            <span class="n">callable_center</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="n">center</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">callable_center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">callable_center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+        
+        <span class="k">def</span> <span class="nf">circumference_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+            
+        <span class="nb">super</span><span class="p">(</span><span class="n">PathCircumference</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">circumference_path</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="n">increment</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;PathCircumference&#39;</span></div>
+        
+<div class="viewcode-block" id="PathParabola"><a class="viewcode-back" href="../../path.html#steering.path.PathParabola">[docs]</a><span class="k">class</span> <span class="nc">PathParabola</span><span class="p">(</span><span class="n">MirroredPath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parabola-like :py:class:`~.MirroredPath`</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    origin: tuple(int, int) or function -&gt; tuple(int, int)</span>
+<span class="sd">        Lowest point of the parabola</span>
+<span class="sd">    width: int</span>
+<span class="sd">    height: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
+            <span class="n">callable_origin</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">origin</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">callable_origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">callable_origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain_range</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">height</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span> <span class="o">=</span> <span class="n">width</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_range</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">parabola_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">()</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">t</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+            
+        <span class="nb">super</span><span class="p">(</span><span class="n">PathParabola</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parabola_path</span><span class="p">,</span> <span class="n">domain_start</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_range</span><span class="p">,</span> <span class="n">domain_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_range</span><span class="p">,</span> <span class="n">increment</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;PathParbola&#39;</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Pygame AI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gameobject.html">Game Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../static.html">Static</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../kinematic.html">Kinematic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blended.html">Blended</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../priority.html">Priority</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../path.html">Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_game.html">Example Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide.html">Pygame AI Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Nek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

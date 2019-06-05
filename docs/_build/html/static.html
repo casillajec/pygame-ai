@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Static &#8212; Pygame AI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Kinematic" href="kinematic.html" />
+    <link rel="prev" title="Game Object" href="gameobject.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-steering.static">
+<span id="static"></span><h1>Static<a class="headerlink" href="#module-steering.static" title="Permalink to this headline">¶</a></h1>
+<p>Static movement</p>
+<p>This module implements a series of classes and methods that emulate
+the behavior of objects moving in a 2D space in a static way
+(not involving acceleration)</p>
+<p class="rubric">Notes</p>
+<p>This might need a slightly better explaination</p>
+<div class="section" id="steeringoutput">
+<h2>SteeringOutput<a class="headerlink" href="#steeringoutput" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="steering.static.SteeringOutput">
+<em class="property">class </em><code class="descclassname">steering.static.</code><code class="descname">SteeringOutput</code><span class="sig-paren">(</span><em>velocity=None</em>, <em>rotation=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#SteeringOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.SteeringOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for Steering data</p>
+<p>This class is used as a container for the  output of the
+<a class="reference internal" href="#steering.static.StaticSteeringBehavior" title="steering.static.StaticSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaticSteeringBehavior</span></code></a> algorithms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>velocity</strong> (<a class="reference external" href="https://www.pygame.org/docs/ref/math.html#pygame.math.Vector2">pygame.math.Vector2</a>, optional) – Linear velocity, defaults to (0, 0)</p></li>
+<li><p><strong>rotation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Angular velocity, defaults to 0</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="steering.static.SteeringOutput.velocity">
+<code class="descname">velocity</code><a class="headerlink" href="#steering.static.SteeringOutput.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear velocity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://www.pygame.org/docs/ref/math.html#pygame.math.Vector2">pygame.math.Vector2</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="steering.static.SteeringOutput.rotation">
+<code class="descname">rotation</code><a class="headerlink" href="#steering.static.SteeringOutput.rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angular velocity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="steering.static.SteeringOutput.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>gameobject</em>, <em>tick</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#SteeringOutput.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.SteeringOutput.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a <a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>’s velocity and rotation</p>
+<p>This method should be called once per loop, it updates the given
+<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">gameobject.GameObject</span></code></a>’s velocity and rotation based
+on this <a class="reference internal" href="#steering.static.SteeringOutput" title="steering.static.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code></a>’s acceleration request</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gameobject</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code> that will be updated</p></li>
+<li><p><strong>tick</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Time transcurred since last loop</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="steering.static.null_steering">
+<code class="descclassname">steering.static.</code><code class="descname">null_steering</code><a class="headerlink" href="#steering.static.null_steering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constant with 0 linear velocity and 0 angular velocity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#steering.static.SteeringOutput" title="steering.static.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="staticsteeringbehavior">
+<h2>StaticSteeringBehavior<a class="headerlink" href="#staticsteeringbehavior" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="steering.static.StaticSteeringBehavior">
+<em class="property">class </em><code class="descclassname">steering.static.</code><code class="descname">StaticSteeringBehavior</code><a class="reference internal" href="_modules/steering/static.html#StaticSteeringBehavior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.StaticSteeringBehavior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template StaticSteeringBehavior class</p>
+<p>This class is a template to supply base methods for StaticSteeringBehaviors.
+This class is meant to be subclassed since the methods here are just placeholders</p>
+<dl class="method">
+<dt id="steering.static.StaticSteeringBehavior.draw_indicators">
+<code class="descname">draw_indicators</code><span class="sig-paren">(</span><em>screen</em>, <em>offset=&lt;function StaticSteeringBehavior.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#StaticSteeringBehavior.draw_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.StaticSteeringBehavior.draw_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws appropiate indicators for each <a class="reference internal" href="#steering.static.StaticSteeringBehavior" title="steering.static.StaticSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaticSteeringBehavior</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>screen</strong> (<a class="reference external" href="https://www.pygame.org/docs/ref/surface.html#pygame.Surface">pygame.Surface</a>) – Surface in which to draw indicators, normally this would be the screen Surface</p></li>
+<li><p><strong>offset</strong> (<em>function</em><em>, </em><em>optional</em>) – <p>Function that applies an offset to the object’s position</p>
+<p>This is meant to be used together with scrolling cameras,
+leave empty if your game doesn’t implement one,it defaults
+to a linear function f(pos) -&gt; pos</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="steering.static.StaticSteeringBehavior.get_steering">
+<code class="descname">get_steering</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#StaticSteeringBehavior.get_steering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.StaticSteeringBehavior.get_steering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a steering request</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Requested steering</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#steering.static.SteeringOutput" title="steering.static.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="steering.static.Arrive">
+<em class="property">class </em><code class="descclassname">steering.static.</code><code class="descname">Arrive</code><span class="sig-paren">(</span><em>character</em>, <em>target</em>, <em>radius=None</em>, <em>time_to_arrive=0.25</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#Arrive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.Arrive" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#steering.static.StaticSteeringBehavior" title="steering.static.StaticSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaticSteeringBehavior</span></code></a> that makes the character <strong>Arrive</strong> at a target</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Character with this behavior</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Target to <strong>Arrive</strong> at</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Distance from the center of the target at which the character will stop</p></li>
+<li><p><strong>time_to_arrive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Estimated time, in seconds, to <strong>Arrive</strong> at the target</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="steering.static.Flee">
+<em class="property">class </em><code class="descclassname">steering.static.</code><code class="descname">Flee</code><span class="sig-paren">(</span><em>character</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#Flee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.Flee" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#steering.static.StaticSteeringBehavior" title="steering.static.StaticSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaticSteeringBehavior</span></code></a> that makes the character <strong>Flee</strong> from a target</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Character with this behavior</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Target to <strong>Flee</strong> from</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="steering.static.Seek">
+<em class="property">class </em><code class="descclassname">steering.static.</code><code class="descname">Seek</code><span class="sig-paren">(</span><em>character</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#Seek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.Seek" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#steering.static.StaticSteeringBehavior" title="steering.static.StaticSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaticSteeringBehavior</span></code></a> that makes the character <strong>Seek</strong> a target</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Character with this behavior</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Target to <strong>Seek</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="steering.static.Wander">
+<em class="property">class </em><code class="descclassname">steering.static.</code><code class="descname">Wander</code><span class="sig-paren">(</span><em>character</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/static.html#Wander"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.static.Wander" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#steering.static.StaticSteeringBehavior" title="steering.static.StaticSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaticSteeringBehavior</span></code></a> that makes the character <strong>Wander</strong></p>
+<p>This behavior makes the character move with it’s maximum speed in a
+particular direction for a random period of time, after that the
+character’s orientation is changed randomly using the character’s
+<a class="reference internal" href="gameobject.html#gameobject.GameObject.max_rotation" title="gameobject.GameObject.max_rotation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">max_rotation</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Character with this behavior</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Pygame AI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gameobject.html">Game Object</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Static</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematic.html">Kinematic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blended.html">Blended</a></li>
+<li class="toctree-l1"><a class="reference internal" href="priority.html">Priority</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_game.html">Example Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide.html">Pygame AI Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="gameobject.html" title="previous chapter">Game Object</a></li>
+      <li>Next: <a href="kinematic.html" title="next chapter">Kinematic</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Nek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/static.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

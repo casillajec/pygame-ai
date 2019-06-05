@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Blended &#8212; Pygame AI 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Priority" href="priority.html" />
+    <link rel="prev" title="Kinematic" href="kinematic.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-steering.blended">
+<span id="blended"></span><h1>Blended<a class="headerlink" href="#module-steering.blended" title="Permalink to this headline">¶</a></h1>
+<p>Blended Steering Behaviors</p>
+<p>This module implements a class that Blends a list of
+<a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a> s and provides
+a weighted sum of their outputs as a steering request.</p>
+<p>This is the bread and butter of <strong>Steering Behaviors</strong> since it easily
+combines different behaviors that allow for semi-complex AI behaviors.</p>
+<p>Derives from <a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a>.</p>
+<p class="rubric">Example</p>
+<p>This is how you would normally create your own <a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a> ,
+in this case we are making a more complex version of <a class="reference internal" href="kinematic.html#steering.kinematic.Arrive" title="steering.kinematic.Arrive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Arrive</span></code></a>
+where the character looks where it’s going and also tries to avoid any
+obstacle in the way.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">flocking_behavior</span> <span class="o">=</span> <span class="n">BlendedSteering</span><span class="p">(</span>
+    <span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
+    <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">Arrive</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span> <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">LookWhereYoureGoing</span><span class="p">(</span><span class="n">character</span><span class="p">),</span> <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">ObstacleAvoidance</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">),</span> <span class="n">weight</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This module also includes a couple of pre-implemented <a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a>.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="admonition-title">Todo</p>
+<p>Make BehaviorAndWeight prettier, maybe use named tuples?</p>
+</div>
+<div class="section" id="behaviorandweight">
+<h2>BehaviorAndWeight<a class="headerlink" href="#behaviorandweight" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="steering.blended.BehaviorAndWeight">
+<em class="property">class </em><code class="descclassname">steering.blended.</code><code class="descname">BehaviorAndWeight</code><span class="sig-paren">(</span><em>behavior</em>, <em>weight</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/blended.html#BehaviorAndWeight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.blended.BehaviorAndWeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for Behavior and Weight values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>behavior</strong> (<a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a>) – </p></li>
+<li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="blendedsteering">
+<h2>BlendedSteering<a class="headerlink" href="#blendedsteering" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="steering.blended.BlendedSteering">
+<em class="property">class </em><code class="descclassname">steering.blended.</code><code class="descname">BlendedSteering</code><span class="sig-paren">(</span><em>character</em>, <em>behaviors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/blended.html#BlendedSteering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.blended.BlendedSteering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base Blended Steering</p>
+<p>This class provides methods neccesary to combine the list of steering
+behaviors and produce a single <a class="reference internal" href="kinematic.html#steering.kinematic.SteeringOutput" title="steering.kinematic.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code></a>.</p>
+<p>Derives from <a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a>, currently
+<a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a> with <a class="reference internal" href="static.html#steering.static.StaticSteeringBehavior" title="steering.static.StaticSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">StaticSteeringBehavior</span></code></a>
+is not supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Character with this behavior</p></li>
+<li><p><strong>behaviors</strong> (list(<a class="reference internal" href="#steering.blended.BehaviorAndWeight" title="steering.blended.BehaviorAndWeight"><code class="xref py py-class docutils literal notranslate"><span class="pre">BehaviorAndWeight</span></code></a>)) – List of behaviors that compose this <a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="steering.blended.BlendedSteering.draw_indicators">
+<code class="descname">draw_indicators</code><span class="sig-paren">(</span><em>screen</em>, <em>offset=&lt;function BlendedSteering.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/blended.html#BlendedSteering.draw_indicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.blended.BlendedSteering.draw_indicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws appropiate indicators for this <a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a></p>
+<p>Draws the indicators of all <a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a>
+that compose this <a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>screen</strong> (<a class="reference external" href="https://www.pygame.org/docs/ref/surface.html#pygame.Surface">pygame.Surface</a>) – Surface in which to draw indicators, normally this would be the screen Surface</p></li>
+<li><p><strong>offset</strong> (<em>function</em><em>, </em><em>optional</em>) – <p>Function that applies an offset to the object’s position</p>
+<p>This is meant to be used together with scrolling cameras,
+leave empty if your game doesn’t implement one,it defaults
+to a linear function f(pos) -&gt; pos</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="steering.blended.BlendedSteering.get_steering">
+<code class="descname">get_steering</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/blended.html#BlendedSteering.get_steering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.blended.BlendedSteering.get_steering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the combined steering request of this <a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Requested steering</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="steering.blended.Arrive">
+<em class="property">class </em><code class="descclassname">steering.blended.</code><code class="descname">Arrive</code><span class="sig-paren">(</span><em>character</em>, <em>target</em>, <em>obstacles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/blended.html#Arrive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.blended.Arrive" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a> that makes the character <strong>Arrive</strong> at a target</p>
+<p>This is behavior is a more complex version of <a class="reference internal" href="kinematic.html#steering.kinematic.Arrive" title="steering.kinematic.Arrive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Arrive</span></code></a>
+that also <strong>Looks Where it’s Going</strong> and tries to <strong>Avoid Obstacles</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – </p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – </p></li>
+<li><p><strong>obstacles</strong> (iterable(<a class="reference external" href="https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite">pygame.sprite.Sprite</a>)) – Solid obstacles</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="steering.blended.Flocking">
+<em class="property">class </em><code class="descclassname">steering.blended.</code><code class="descname">Flocking</code><span class="sig-paren">(</span><em>character</em>, <em>swarm</em>, <em>target</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/blended.html#Flocking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.blended.Flocking" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a> that makes the character move in a flock-like way</p>
+<p>This behavior is meant to be used with several characters, they will all
+try to <strong>Arive</strong> at the same target location while <strong>Looking Where They’re Going</strong>
+and keeping <strong>Separated</strong> from eachother.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – </p></li>
+<li><p><strong>swarm</strong> (iterable(<a class="reference external" href="https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite">pygame.sprite.Sprite</a>)) – Rest of the entities that conform the Flock</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="steering.blended.Wander">
+<em class="property">class </em><code class="descclassname">steering.blended.</code><code class="descname">Wander</code><span class="sig-paren">(</span><em>character</em>, <em>obstacles</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/blended.html#Wander"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.blended.Wander" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a> that makes the character <strong>Wander</strong> around.</p>
+<p>This behaviors is a more complex version of <a class="reference internal" href="kinematic.html#steering.kinematic.Wander" title="steering.kinematic.Wander"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wander</span></code></a>
+that also tries to <strong>Avoid Obstacles</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – </p></li>
+<li><p><strong>obstacles</strong> (iterable(<a class="reference external" href="https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite">pygame.sprite.Sprite</a>)) – Solid obstacles</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Pygame AI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gameobject.html">Game Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="static.html">Static</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematic.html">Kinematic</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Blended</a></li>
+<li class="toctree-l1"><a class="reference internal" href="priority.html">Priority</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path.html">Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_game.html">Example Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide.html">Pygame AI Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="kinematic.html" title="previous chapter">Kinematic</a></li>
+      <li>Next: <a href="priority.html" title="next chapter">Priority</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Nek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/blended.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

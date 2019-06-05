@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>gameobject &#8212; Pygame AI 0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for gameobject</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; General-Purpose Game Object</span>
+
+<span class="sd">    This module implements the GameObject class, core of this AI engine,</span>
+<span class="sd">    along with other useful classes, methods and constants</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">from</span> <span class="nn">pygame_ai.utils</span> <span class="k">import</span> <span class="n">list_utils</span>
+
+<span class="n">null_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="sd">&quot;&quot;&quot; (:pgsurf:`Surface`) : Empty Surface with size 0 &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GameObject"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject">[docs]</a><span class="k">class</span> <span class="nc">GameObject</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; General-Purpose Game Object.</span>
+<span class="sd">    </span>
+<span class="sd">    Derives from :pgsprite:`Sprite`.</span>
+<span class="sd">    </span>
+<span class="sd">    Holds values relevant to any non-static entity in the game.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    img_surf: :pgsurf:`Surface`</span>
+<span class="sd">        It is asigned to self.image, defaults to :const:`null_surface`</span>
+<span class="sd">    pos: list_like(int, int), optional</span>
+<span class="sd">        Initial Position, it is assigned to self.rect.center</span>
+<span class="sd">    max_speed: int, optional</span>
+<span class="sd">        Maximum linear speed</span>
+<span class="sd">    max_accel: int, optional</span>
+<span class="sd">        Maximum linear acceleration</span>
+<span class="sd">    max_rotation: int, optional</span>
+<span class="sd">        Maximum angular speed</span>
+<span class="sd">    max_angular_accel: int, optional</span>
+<span class="sd">        Maximum angular acceleration</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    This class exposes the following public properties and methods</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    image: :pgsurf:`Surface`</span>
+<span class="sd">        Surface to be blited to screen</span>
+<span class="sd">    rect: :pgrect:`Rect`</span>
+<span class="sd">        Derived from image, it&#39;s center is the GameObejct&#39;s position</span>
+<span class="sd">    position: :pgmath:`Vector2`</span>
+<span class="sd">        Current position</span>
+<span class="sd">    velocity: :pgmath:`Vector2`</span>
+<span class="sd">        Current velocity</span>
+<span class="sd">    max_speed: int</span>
+<span class="sd">        Maximum linear speed</span>
+<span class="sd">    max_accel: int</span>
+<span class="sd">        Maximum linear acceleration</span>
+<span class="sd">    orientation: int</span>
+<span class="sd">        Current orientation in degrees</span>
+<span class="sd">    rotation: int</span>
+<span class="sd">        Current angular velocity</span>
+<span class="sd">    max_rotation: int</span>
+<span class="sd">        Maximum angular speed</span>
+<span class="sd">    max_angular_accel: int</span>
+<span class="sd">        Maximum angular acceleration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_surf</span> <span class="o">=</span> <span class="n">null_surface</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">max_speed</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">max_accel</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">max_rotation</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">max_angular_accel</span> <span class="o">=</span> <span class="mi">50</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GameObject</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_image</span> <span class="o">=</span> <span class="n">img_surf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span> <span class="o">=</span> <span class="n">max_speed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_accel</span> <span class="o">=</span> <span class="n">max_accel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_rotation</span> <span class="o">=</span> <span class="n">max_rotation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_angular_accel</span> <span class="o">=</span> <span class="n">max_angular_accel</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
+    
+    <span class="nd">@position</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">pos</span>
+        
+<div class="viewcode-block" id="GameObject.update"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick</span><span class="p">,</span> <span class="n">solid_entities_group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s position and orientation, also handles collision with solid entities</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        tick: int</span>
+<span class="sd">            Time passed since last loop</span>
+<span class="sd">        solid_entitites_group: :pgsprite:`Group`</span>
+<span class="sd">            A group with the sprites that are considered solid for collision</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Move collision somewhere else</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">solid_sprites</span> <span class="o">=</span> <span class="n">solid_entities_group</span><span class="o">.</span><span class="n">sprites</span><span class="p">()</span>
+        <span class="n">list_utils</span><span class="o">.</span><span class="n">remove_if_exists</span><span class="p">(</span><span class="n">solid_sprites</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        
+        <span class="c1"># Move</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">tick</span><span class="p">,</span> <span class="mi">0</span>                    <span class="p">])</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Vector2</span><span class="p">([</span><span class="mi">0</span>                    <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">tick</span><span class="p">])</span>
+        
+        <span class="c1"># Check for collision</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">spritecollide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solid_sprites</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">-</span><span class="n">dx</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">dy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">spritecollide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solid_sprites</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">-</span><span class="n">dy</span><span class="p">)</span>
+        
+        <span class="c1"># Rotate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original_image</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">))</span>
+        <span class="n">old_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">old_center</span></div>
+        
+<div class="viewcode-block" id="GameObject.steer"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.steer">[docs]</a>    <span class="k">def</span> <span class="nf">steer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steering</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s velocity and rotation</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        steering: :py:class:`.kinematic.SteeringOutput` or :py:class:.`static.SteeringOutput`</span>
+<span class="sd">            The steering request to update velocity and rotation</span>
+<span class="sd">        tick: int</span>
+<span class="sd">            Time passed since the last loop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">+=</span> <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*</span> <span class="n">tick</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rotation</span> <span class="o">+=</span> <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">*</span> <span class="n">tick</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">normalize_ip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span></div>
+            
+<div class="viewcode-block" id="GameObject.steer_x"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.steer_x">[docs]</a>    <span class="k">def</span> <span class="nf">steer_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steering</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s velocity along the x axis</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        steering: :py:class:`.kinematic.SteeringOutput` or :py:class:.`static.SteeringOutput`</span>
+<span class="sd">            The steering request to update velocity and rotation</span>
+<span class="sd">        tick: int</span>
+<span class="sd">            Time passed since the last loop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">steering_x</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">steering_x</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steer</span><span class="p">(</span><span class="n">steering_x</span><span class="p">,</span> <span class="n">tick</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="GameObject.steer_y"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.steer_y">[docs]</a>    <span class="k">def</span> <span class="nf">steer_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steering</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s velocity along the y axis</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        steering: :py:class:`.kinematic.SteeringOutput` or :py:class:.`static.SteeringOutput`</span>
+<span class="sd">            The steering request to update velocity and rotation</span>
+<span class="sd">        tick: int</span>
+<span class="sd">            Time passed since the last loop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">steering_x</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">steering_x</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steer</span><span class="p">(</span><span class="n">steering_x</span><span class="p">,</span> <span class="n">tick</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="GameObject.steer_angular"><a class="viewcode-back" href="../gameobject.html#gameobject.GameObject.steer_angular">[docs]</a>    <span class="k">def</span> <span class="nf">steer_angular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steering</span><span class="p">,</span> <span class="n">tick</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Updates GameObject&#39;s rotation</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        steering: :py:class:`.kinematic.SteeringOutput` or :py:class:.`static.SteeringOutput`</span>
+<span class="sd">            The steering request to update velocity and rotation</span>
+<span class="sd">        tick: int</span>
+<span class="sd">            Time passed since the last loop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">steering_angular</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">steering_angular</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">steering_angular</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steer</span><span class="p">(</span><span class="n">steering_angular</span><span class="p">)</span></div></div>
+        
+
+<div class="viewcode-block" id="DummyGameObject"><a class="viewcode-back" href="../gameobject.html#gameobject.DummyGameObject">[docs]</a><span class="k">class</span> <span class="nc">DummyGameObject</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A Dummy with :py:class:`GameObject` properties</span>
+<span class="sd">    </span>
+<span class="sd">    Derives from :py:class:`GameObject`.</span>
+<span class="sd">    </span>
+<span class="sd">    Used for quick instantiation when creating :py:class:`GameObject` s</span>
+<span class="sd">    that will only be used as palceholders and are not meant to appear</span>
+<span class="sd">    on screen.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    position: list_like(int, int)</span>
+<span class="sd">        Current position</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DummyGameObject</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">pos</span> <span class="o">=</span> <span class="n">position</span><span class="p">,</span> <span class="n">max_speed</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_accel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_rotation</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_angular_accel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Pygame AI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../gameobject.html">Game Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../static.html">Static</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kinematic.html">Kinematic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../blended.html">Blended</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../priority.html">Priority</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../path.html">Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../example_game.html">Example Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide.html">Pygame AI Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Nek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

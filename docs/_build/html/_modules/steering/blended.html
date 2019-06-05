@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>steering.blended &#8212; Pygame AI 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for steering.blended</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Blended Steering Behaviors</span>
+
+<span class="sd">This module implements a class that Blends a list of</span>
+<span class="sd">:py:class:`~.KinematicSteeringBehavior` s and provides</span>
+<span class="sd">a weighted sum of their outputs as a steering request.</span>
+
+<span class="sd">This is the bread and butter of **Steering Behaviors** since it easily </span>
+<span class="sd">combines different behaviors that allow for semi-complex AI behaviors.</span>
+
+<span class="sd">Derives from :py:class:`~.kinematic.KinematicSteeringBehavior`.</span>
+
+<span class="sd">Example</span>
+<span class="sd">--------</span>
+
+<span class="sd">This is how you would normally create your own :py:class:`~BlendedSteering` ,</span>
+<span class="sd">in this case we are making a more complex version of :py:class:`~steering.kinematic.Arrive`</span>
+<span class="sd">where the character looks where it&#39;s going and also tries to avoid any</span>
+<span class="sd">obstacle in the way.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    flocking_behavior = BlendedSteering(</span>
+<span class="sd">        character = character</span>
+<span class="sd">        behaviors = [</span>
+<span class="sd">            BehaviorAndWeight(kinematic.Arrive(character, target), weight = 1),</span>
+<span class="sd">            BehaviorAndWeight(kinematic.LookWhereYoureGoing(character), weight = 1),</span>
+<span class="sd">            BehaviorAndWeight(kinematic.ObstacleAvoidance(character, obstacles), weight = 2),</span>
+<span class="sd">        ]</span>
+<span class="sd">    )</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">This module also includes a couple of pre-implemented :py:class:`BlendedSteering`.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">.. todo:: Make BehaviorAndWeight prettier, maybe use named tuples?</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">kinematic</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">pygame_ai.gameobject</span> <span class="k">import</span> <span class="n">DummyGameObject</span>
+
+<div class="viewcode-block" id="BehaviorAndWeight"><a class="viewcode-back" href="../../blended.html#steering.blended.BehaviorAndWeight">[docs]</a><span class="k">class</span> <span class="nc">BehaviorAndWeight</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Container for Behavior and Weight values</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    behavior: :py:class:`~.KinematicSteeringBehavior`</span>
+<span class="sd">    weight: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">behavior</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">behavior</span> <span class="o">=</span> <span class="n">behavior</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span></div>
+
+<div class="viewcode-block" id="BlendedSteering"><a class="viewcode-back" href="../../blended.html#steering.blended.BlendedSteering">[docs]</a><span class="k">class</span> <span class="nc">BlendedSteering</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">KinematicSteeringBehavior</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base Blended Steering</span>
+<span class="sd">    </span>
+<span class="sd">    This class provides methods neccesary to combine the list of steering</span>
+<span class="sd">    behaviors and produce a single :py:class:`~.kinematic.SteeringOutput`.</span>
+<span class="sd">    </span>
+<span class="sd">    Derives from :py:class:`~.KinematicSteeringBehavior`, currently </span>
+<span class="sd">    :py:class:`BlendedSteering` with :py:class:`~.StaticSteeringBehavior`</span>
+<span class="sd">    is not supported.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~gameobject.GameObject`</span>
+<span class="sd">        Character with this behavior</span>
+<span class="sd">    behaviors: list(:py:class:`~.BehaviorAndWeight`)</span>
+<span class="sd">        List of behaviors that compose this :py:class:`~.BlendedSteering`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">behaviors</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">character</span> <span class="o">=</span> <span class="n">character</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">behaviors</span> <span class="o">=</span> <span class="n">behaviors</span>
+        
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;BlendedSteering &#39;</span><span class="o">+</span><span class="nb">super</span><span class="p">(</span><span class="n">BlendedSteering</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="BlendedSteering.draw_indicators"><a class="viewcode-back" href="../../blended.html#steering.blended.BlendedSteering.draw_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">draw_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">pos</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot; Draws appropiate indicators for this :py:class:`BlendedSteering`</span>
+<span class="sd">        </span>
+<span class="sd">        Draws the indicators of all :py:class:`~.KinematicSteeringBehavior`</span>
+<span class="sd">        that compose this :py:class:`~.BlendedSteering`.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        screen: :pgsurf:`Surface`</span>
+<span class="sd">            Surface in which to draw indicators, normally this would be the screen Surface</span>
+<span class="sd">        offset: function, optional</span>
+<span class="sd">            Function that applies an offset to the object&#39;s position</span>
+<span class="sd">            </span>
+<span class="sd">            This is meant to be used together with scrolling cameras,</span>
+<span class="sd">            leave empty if your game doesn&#39;t implement one,it defaults </span>
+<span class="sd">            to a linear function f(pos) -&gt; pos</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">behavior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">behaviors</span><span class="p">:</span>
+            <span class="n">behavior</span><span class="o">.</span><span class="n">behavior</span><span class="o">.</span><span class="n">draw_indicators</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="BlendedSteering.get_steering"><a class="viewcode-back" href="../../blended.html#steering.blended.BlendedSteering.get_steering">[docs]</a>    <span class="k">def</span> <span class="nf">get_steering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the combined steering request of this :py:class:`~BlendedSteering`</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :py:class:`SteeringOutput`</span>
+<span class="sd">            Requested steering</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Output steering for accumulating</span>
+        <span class="n">steering</span> <span class="o">=</span> <span class="n">kinematic</span><span class="o">.</span><span class="n">SteeringOutput</span><span class="p">()</span>
+        
+        <span class="c1"># Accumulate all accelerations</span>
+        <span class="k">for</span> <span class="n">behavior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">behaviors</span><span class="p">:</span>
+            <span class="n">steering</span> <span class="o">+=</span> <span class="n">behavior</span><span class="o">.</span><span class="n">behavior</span><span class="o">.</span><span class="n">get_steering</span><span class="p">()</span> <span class="o">*</span> <span class="n">behavior</span><span class="o">.</span><span class="n">weight</span>
+            
+        <span class="c1"># Crop the results and return</span>
+        <span class="n">steering_lin_accel</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">steering_lin_accel</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span><span class="p">:</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">/=</span> <span class="n">steering_lin_accel</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">linear</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_accel</span>
+        
+        <span class="n">steering_angular_accel</span> <span class="o">=</span> <span class="n">steering</span><span class="o">.</span><span class="n">angular</span>
+        <span class="k">if</span> <span class="n">steering_angular_accel</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_angular_accel</span><span class="p">:</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">/=</span> <span class="n">steering_angular_accel</span>
+            <span class="n">steering</span><span class="o">.</span><span class="n">angular</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character</span><span class="o">.</span><span class="n">max_angular_accel</span>
+            
+        <span class="k">return</span> <span class="n">steering</span></div></div>
+        
+<div class="viewcode-block" id="Flocking"><a class="viewcode-back" href="../../blended.html#steering.blended.Flocking">[docs]</a><span class="k">class</span> <span class="nc">Flocking</span><span class="p">(</span><span class="n">BlendedSteering</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~.BlendedSteering` that makes the character move in a flock-like way</span>
+<span class="sd">    </span>
+<span class="sd">    This behavior is meant to be used with several characters, they will all</span>
+<span class="sd">    try to **Arive** at the same target location while **Looking Where They&#39;re Going**</span>
+<span class="sd">    and keeping **Separated** from eachother.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~.GameObject`</span>
+<span class="sd">    swarm: iterable(:pgsprite:`Sprite`)</span>
+<span class="sd">        Rest of the entities that conform the Flock</span>
+<span class="sd">    target: :py:class:`~.GameObject`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">swarm</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">Separation</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">swarm</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">Arrive</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span><span class="n">kinematic</span><span class="o">.</span><span class="n">LookWhereYoureGoing</span><span class="p">(</span><span class="n">character</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Flocking</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">behaviors</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="Wander"><a class="viewcode-back" href="../../blended.html#steering.blended.Wander">[docs]</a><span class="k">class</span> <span class="nc">Wander</span><span class="p">(</span><span class="n">BlendedSteering</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~.BlendedSteering` that makes the character **Wander** around.</span>
+<span class="sd">    </span>
+<span class="sd">    This behaviors is a more complex version of :py:class:`~.kinematic.Wander`</span>
+<span class="sd">    that also tries to **Avoid Obstacles**.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~.GameObject`</span>
+<span class="sd">    obstacles: iterable(:pgsprite:`Sprite`)</span>
+<span class="sd">        Solid obstacles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+        <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># Wander</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">Wander</span><span class="p">(</span><span class="n">character</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="c1"># ObstacleAvoidance</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">ObstacleAvoidance</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="c1"># LookWhereYoureGoing</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">LookWhereYoureGoing</span><span class="p">(</span><span class="n">character</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Wander</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">behaviors</span><span class="p">)</span></div>
+        
+<div class="viewcode-block" id="Arrive"><a class="viewcode-back" href="../../blended.html#steering.blended.Arrive">[docs]</a><span class="k">class</span> <span class="nc">Arrive</span><span class="p">(</span><span class="n">BlendedSteering</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~.BlendedSteering` that makes the character **Arrive** at a target</span>
+<span class="sd">    </span>
+<span class="sd">    This is behavior is a more complex version of :py:class:`~.kinematic.Arrive`</span>
+<span class="sd">    that also **Looks Where it&#39;s Going** and tries to **Avoid Obstacles**.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~.GameObject`</span>
+<span class="sd">    target: :py:class:`~.GameObject`</span>
+<span class="sd">    obstacles: iterable(:pgsprite:`Sprite`)</span>
+<span class="sd">        Solid obstacles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">):</span>
+        <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># Arrive</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">Arrive</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="c1"># ObstacleAvoidance    </span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">ObstacleAvoidance</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">obstacles</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="c1"># LookWhereYoureGoing</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">LookWhereYoureGoing</span><span class="p">(</span><span class="n">character</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Arrive</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">behaviors</span><span class="p">)</span></div>
+        
+<span class="k">class</span> <span class="nc">Surround</span><span class="p">(</span><span class="n">BlendedSteering</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; :py:class:`~.BlendedSteering` that makes the character **Surround** a target</span>
+<span class="sd">    </span>
+<span class="sd">    This behavior uses :py:class:`~.FollowPath` and :py:class:`~.Face`</span>
+<span class="sd">    to make the character revolve around the target while looking at it.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    character: :py:class:`~.GameObject`</span>
+<span class="sd">    target: :py:class:`~.GameObject`</span>
+<span class="sd">    radius: int</span>
+<span class="sd">        The radius of the circle the character will surround the target with</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="n">circumpath</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">PathCircumference</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+        <span class="n">behaviors</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">FollowPath</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">circumpath</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">BehaviorAndWeight</span><span class="p">(</span>
+                <span class="n">kinematic</span><span class="o">.</span><span class="n">Face</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">target</span><span class="p">),</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Surround</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">behaviors</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Pygame AI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../gameobject.html">Game Object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../static.html">Static</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../kinematic.html">Kinematic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../blended.html">Blended</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../priority.html">Priority</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../path.html">Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example_game.html">Example Game</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide.html">Pygame AI Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Nek.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
