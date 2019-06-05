@@ -7,17 +7,17 @@ def readme():
 setup(
     name = 'pygame_ai',
     version = '0.1',
-    description = 'AI module for 2D pygame games',
-    long_description = 'Nothing else',
+    description = 'Videogame AI package for PyGame',
+    long_description = 'Implements a set of common AI techniques used in videogame development',
     classifiers = [
         'Programming Language :: Python :: 3.6',
-        'Topic :: Libraries :: pygame'
+        'Topic :: Software Development :: Libraries :: pygame'
     ],
     keywords = 'pygame ai steering',
-    url = 'notyet',
+    url = 'https://github.com/nek2712/pygame-ai',
     author = 'Nek',
     author_email = 'nek2712@gmail.com',
-    license = 'none yet',
+    license = 'GLGPL v2.1',
     packages = ['pygame_ai'],
     install_requires = [
         'pygame'
