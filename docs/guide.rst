@@ -28,7 +28,7 @@ Game Structure
 --------------
 
 This is the basic game structure that I'll be working with in this guide,
-it contains te basic things that any PyGame game shuold have.
+it contains the basic things that any PyGame game should have.
 
 .. code-block:: python
     
@@ -172,11 +172,11 @@ Steering
 :py:class:`~.kinematic.SteeringOutput` is the way these algorithms comunicate how
 an object should **accelerate** in order to achieve it's goal.
 
-In the previous example we saw that they player does not produce it's 
+In the previous example we saw that the player does not produce it's 
 own steering, that is because normally the player is controled by
 user input, we'll see later how we can create and modify our own 
-:py:class:`SteeringOutput` to create interesting effects, for now let's
-move to actually implementing something useful with this library.
+:py:class:`SteeringOutput` to move the player, for now let's
+move  on and actually implement something useful with this library.
 
 .. _SteeringAsAnAI:
 
@@ -500,7 +500,7 @@ Other Behaviors
 Finally, this library also implements a couple different kinds of 
 :py:class:`KinematicSteeringBehavior`s which are :py:class:`BlendedSteering`
 and :py:class:`PrioritySteering`. These allow you to combine different
-basic behaviors te create more complicated ones, take a look at the
+basic behaviors to create more complicated ones, take a look at the
 pre-implemented behaviors to see what is possible by using those.
 
 .. _Gravity:
