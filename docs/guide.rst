@@ -73,7 +73,7 @@ it contains the basic things that any PyGame game should have.
                 if event.type == QUIT:
                     sys.exit(2)
             
-            # Erease previous frame by bliting background
+            # Erase previous frame by bliting background
             screen.blit(background, background.get_rect())
             
             # Update the entities in your game
@@ -115,7 +115,7 @@ like this:
             # First we create the image by filling a surface with blue color
             img = pygame.Surface( (10, 15) ).convert()
             img.fill(BLUE)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(Player, self).__init__(
                 img_surf = img,
                 pos = pos,
@@ -145,7 +145,7 @@ This is an example Player with its update function:
             # First we create the image by filling a surface with blue color
             img = pygame.Surface( (10, 15) ).convert()
             img.fill(BLUE)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(Player, self).__init__(
                 img_surf = img,
                 pos = pos,
@@ -197,7 +197,7 @@ implement an NPC whose only AI behavior is a :py:class:`~.KinematicSteeringBehav
             img.fill( (255, 255, 255, 0) )
             # Draw the circle
             pygame.draw.circle(img, RED, (5, 5), 5)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(CircleNPC, self).__init__(
                 img_surf = img,
                 pos = pos,
@@ -316,7 +316,7 @@ created. We will also need to instantiate the **CircleNPC** class and do the sam
     
         # . . .
         
-        # Erease previous frame by bliting background
+        # Erase previous frame by bliting background
         screen.blit(background, background.get_rect())
         
         # Update player and NPCs
@@ -354,7 +354,7 @@ that does just that, enter :py:class:`~.Drag`.
 
 The only thing particular to this behavior is that you will not normally
 create an individual instance for every entity, instead you should create
-one for every *surface* or *environemnt* your entity is in. This is because
+one for every *surface* or *environment* your entity is in. This is because
 an entity will have less drag trying to run in plain land than trying to 
 run with it's body half-submerged in water.
 
@@ -373,7 +373,7 @@ applying it to all entities, but you can get creative.
     
         # . . .
         
-        # Erease previous frame by bliting background
+        # Erase previous frame by bliting background
         screen.blit(background, background.get_rect())
         
         # Update player and NPCs
@@ -407,7 +407,7 @@ Paths
 
 You can create very light-weight paths using the :py:class:`~.Path` class,
 the only "problem" is that the paths are defined as mathematic functions,
-for people unfamiliar with that it can be quiet spooky, and I would recommend them
+for people unfamiliar with that it can be quite spooky, and I would recommend them
 to use the pre-implemented paths. Otherwise it is very easy to define paths
 with this class, let's define a very simple cosine-wave-shaped path and 
 make an NPC follow it:
@@ -514,7 +514,7 @@ consider when adding gravity into our game, but here I'll show a very
 basic NPC that has gravity applied.
 
 First, if we are going to have falling entities, we need to make sure 
-they dont fall off-screen. for that we can add a very simple check to make
+they don't fall off-screen. for that we can add a very simple check to make
 sure nothing moves under the screen:
 
 .. code-block:: python
@@ -556,7 +556,7 @@ let's make that an NPC:
             img.fill( (255, 255, 255, 0) )
             # Draw the circle
             pygame.draw.circle(img, RED, (5, 5), 5)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(GravityCircleNPC, self).__init__(
                 img_surf = img,
                 pos = pos,
