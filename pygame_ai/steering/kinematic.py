@@ -666,16 +666,10 @@ class FollowPath(KinematicSteeringBehavior):
     character: :py:class:`~gameobject.GameObject`
         Character with this behavior
     path: :py:class:`steering.path.Path`
-        (see :py:class:`steering.path.Path`) that will be Followed
-    align_target_radius: int, optional
-        Distance, in degrees, from the target orientation at which the character will stop rotation
-    slow_radius: int, optional
-        Distance, in degrees, from the target orientation at which the character will start to slow rotation
-    align_time: float, optional
-        Estimated time, in seconds, to **LookWhereYoureGoing**
+        Path that will be Followed
     """
     
-    def __init__(self, character, path, align_target_radius = 1, align_slow_radius = 10, align_time = 0.2):
+    def __init__(self, character, path):
         self.character = character
         self.path = path
         self.seek = Seek(self.character, DummyGameObject())

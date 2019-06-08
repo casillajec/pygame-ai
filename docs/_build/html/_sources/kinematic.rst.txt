@@ -4,7 +4,8 @@ Kinematic
 .. automodule:: steering.kinematic
 
     SteeringOutput
-    --------------
+    ==============
+    
     
     .. autoclass:: SteeringOutput
         :members:

@@ -6,6 +6,7 @@ Kinematic
     SteeringOutput
     --------------
     
+    
     .. autoclass:: SteeringOutput
         :members:
         

@@ -108,8 +108,8 @@ class Path(object):
         return self
         
     def __next__(self):
-        self.x += self.increment
         if self.x < self.domain_end:
+            self.x += self.increment
             self.current = lambda: self.path_func(self, self.x)
             return self.current()
         else:

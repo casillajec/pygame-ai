@@ -131,9 +131,8 @@ angular accelerations provided.</p>
 </dl>
 </dd></dl>
 
-</div>
 <div class="section" id="kinematicsteeringbehavior">
-<h2>KinematicSteeringBehavior<a class="headerlink" href="#kinematicsteeringbehavior" title="Permalink to this headline">¶</a></h2>
+<h3>KinematicSteeringBehavior<a class="headerlink" href="#kinematicsteeringbehavior" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="steering.kinematic.KinematicSteeringBehavior">
 <em class="property">class </em><code class="descclassname">steering.kinematic.</code><code class="descname">KinematicSteeringBehavior</code><a class="reference internal" href="_modules/steering/kinematic.html#KinematicSteeringBehavior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.kinematic.KinematicSteeringBehavior" title="Permalink to this definition">¶</a></dt>
@@ -299,7 +298,7 @@ with that dummy’s orientation</p>
 
 <dl class="class">
 <dt id="steering.kinematic.FollowPath">
-<em class="property">class </em><code class="descclassname">steering.kinematic.</code><code class="descname">FollowPath</code><span class="sig-paren">(</span><em>character</em>, <em>path</em>, <em>align_target_radius=1</em>, <em>align_slow_radius=10</em>, <em>align_time=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/kinematic.html#FollowPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.kinematic.FollowPath" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">steering.kinematic.</code><code class="descname">FollowPath</code><span class="sig-paren">(</span><em>character</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/steering/kinematic.html#FollowPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#steering.kinematic.FollowPath" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a> that makes the character <strong>Follow a Path</strong></p>
 <p>This behavior makes the character follow a particular
 <a class="reference internal" href="path.html#steering.path.Path" title="steering.path.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>. It will do so until the character
@@ -308,10 +307,7 @@ has traversed all points in it.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>character</strong> (<a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a>) – Character with this behavior</p></li>
-<li><p><strong>path</strong> (<a class="reference internal" href="path.html#steering.path.Path" title="steering.path.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">steering.path.Path</span></code></a>) – (see <a class="reference internal" href="path.html#steering.path.Path" title="steering.path.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">steering.path.Path</span></code></a>) that will be Followed</p></li>
-<li><p><strong>align_target_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Distance, in degrees, from the target orientation at which the character will stop rotation</p></li>
-<li><p><strong>slow_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Distance, in degrees, from the target orientation at which the character will start to slow rotation</p></li>
-<li><p><strong>align_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><em>optional</em>) – Estimated time, in seconds, to <strong>LookWhereYoureGoing</strong></p></li>
+<li><p><strong>path</strong> (<a class="reference internal" href="path.html#steering.path.Path" title="steering.path.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">steering.path.Path</span></code></a>) – Path that will be Followed</p></li>
 </ul>
 </dd>
 </dl>
@@ -457,6 +453,7 @@ to see how the target is generated. This Behavior also uses
 </dl>
 </dd></dl>
 
+</div>
 </div>
 </div>
 
