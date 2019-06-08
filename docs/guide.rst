@@ -1,6 +1,6 @@
 .. _guide:
 
-Pygame AI Guide
+PyGame AI Guide
 ===============
 
 This guide is meant to explain the basic concepts you need to know to 
@@ -135,7 +135,7 @@ Now, that is not enough to call it done, we still need to implement a way for
 this entity to move, this is usually done trough an **update** function, in fact,
 every :py:class:`~.GameObject` has one, but it doesn't do anything.
 
-This is an example Player with it's update function:
+This is an example Player with its update function:
 
 .. code-block:: python
 

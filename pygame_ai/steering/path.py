@@ -158,7 +158,7 @@ class CyclicPath(Path):
         super(CyclicPath, self).__init__(path_func, domain_end, domain_start, increment)
         
     def __next__(self):
-        if self.x > self.domain_end:
+        if self.x >= self.domain_end:
             self.reset()
         
         return super(CyclicPath, self).__next__()

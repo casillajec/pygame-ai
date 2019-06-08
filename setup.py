@@ -6,7 +6,7 @@ def readme():
 
 setup(
     name = 'pygame_ai',
-    version = '0.1',
+    version = '0.1.1',
     description = 'Videogame AI package for PyGame',
     long_description = 'Implements a set of common AI techniques used in videogame development',
     classifiers = [
