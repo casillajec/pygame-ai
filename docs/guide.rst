@@ -102,7 +102,7 @@ in your game, like the player, enemies, NPCs, you name it. The way these
 entities will be better represented (and the only way they should be, 
 unless you really know what you're doing) in a game that uses this library is
 by using the :py:class:`~.GameObject` class, it contains all the 
-necessary properties and methods the library uses to do all it's calculations.
+necessary properties and methods the library uses to do all its calculations.
 
 The way you create your own entities is by subclassing :py:class:`~.GameObject`
 like this:
