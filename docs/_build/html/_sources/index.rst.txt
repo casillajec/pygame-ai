@@ -30,7 +30,8 @@ All of this library's implementations work using this implementation
 of :py:class:`~.GameObject`.
     
 You can see how the library works by downloading our :ref:`example_game`, or
-you can visit the :ref:`guide` to see how to implement that same game.
+you can visit the :ref:`guide` to see how to implement a simple game
+using the library's core functions.
 
 So far these are the major techniquest that have been implemented:
 

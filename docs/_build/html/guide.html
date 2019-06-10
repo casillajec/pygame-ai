@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Pygame AI Guide &#8212; Pygame AI 0.1 documentation</title>
+    <title>PyGame AI Guide &#8212; Pygame AI 0.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,7 +32,7 @@
           <div class="body" role="main">
             
   <div class="section" id="pygame-ai-guide">
-<span id="guide"></span><h1>Pygame AI Guide<a class="headerlink" href="#pygame-ai-guide" title="Permalink to this headline">¶</a></h1>
+<span id="guide"></span><h1>PyGame AI Guide<a class="headerlink" href="#pygame-ai-guide" title="Permalink to this headline">¶</a></h1>
 <p>This guide is meant to explain the basic concepts you need to know to
 integrate this library into your game, it is not meant to explain how to
 create games with PyGame, although it does include a very basic game
@@ -56,7 +56,7 @@ structure that you can use as a template.</p>
 <div class="section" id="game-structure">
 <span id="gamestructure"></span><h2>Game Structure<a class="headerlink" href="#game-structure" title="Permalink to this headline">¶</a></h2>
 <p>This is the basic game structure that I’ll be working with in this guide,
-it contains te basic things that any PyGame game shuold have.</p>
+it contains the basic things that any PyGame game should have.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">import</span> <span class="nn">pygame</span>
@@ -98,7 +98,7 @@ it contains te basic things that any PyGame game shuold have.</p>
             <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QUIT</span><span class="p">:</span>
                 <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-        <span class="c1"># Erease previous frame by bliting background</span>
+        <span class="c1"># Erase previous frame by bliting background</span>
         <span class="n">screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">background</span><span class="o">.</span><span class="n">get_rect</span><span class="p">())</span>
 
         <span class="c1"># Update the entities in your game</span>
@@ -134,7 +134,7 @@ like this:</p>
         <span class="c1"># First we create the image by filling a surface with blue color</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
         <span class="n">img</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span>
-        <span class="c1"># Call GameObejct init with appropiate values</span>
+        <span class="c1"># Call GameObject init with appropiate values</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Player</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">img_surf</span> <span class="o">=</span> <span class="n">img</span><span class="p">,</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">,</span>
@@ -153,14 +153,14 @@ used work sort of smoothly but they can be improved.</p>
 <p>Now, that is not enough to call it done, we still need to implement a way for
 this entity to move, this is usually done trough an <strong>update</strong> function, in fact,
 every <a class="reference internal" href="gameobject.html#gameobject.GameObject" title="gameobject.GameObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">GameObject</span></code></a> has one, but it doesn’t do anything.</p>
-<p>This is an example Player with it’s update function:</p>
+<p>This is an example Player with its update function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">pai</span><span class="o">.</span><span class="n">gameobject</span><span class="o">.</span><span class="n">GameObject</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
         <span class="c1"># First we create the image by filling a surface with blue color</span>
         <span class="n">img</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>
         <span class="n">img</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">BLUE</span><span class="p">)</span>
-        <span class="c1"># Call GameObejct init with appropiate values</span>
+        <span class="c1"># Call GameObject init with appropiate values</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Player</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">img_surf</span> <span class="o">=</span> <span class="n">img</span><span class="p">,</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">,</span>
@@ -183,12 +183,12 @@ entity’s rect with the direction and stregth of the entity’s <strong>velocit
 <span id="id1"></span><h2>Steering<a class="headerlink" href="#steering" title="Permalink to this headline">¶</a></h2>
 <p><em>Steering Algorithms</em> are the core of movement in this library, the
 <a class="reference internal" href="kinematic.html#steering.kinematic.SteeringOutput" title="steering.kinematic.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code></a> is the way these algorithms comunicate how
-an object should <strong>accelerate</strong> in order to achieve it’s goal.</p>
-<p>In the previous example we saw that they player does not produce it’s
+an object should <strong>accelerate</strong> in order to achieve its goal.</p>
+<p>In the previous example we saw that the player does not produce its
 own steering, that is because normally the player is controled by
 user input, we’ll see later how we can create and modify our own
-<code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code> to create interesting effects, for now let’s
-move to actually implementing something useful with this library.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code> to move the player, for now let’s
+move  on and actually implement something useful with this library.</p>
 </div>
 <div class="section" id="steering-as-an-ai">
 <span id="steeringasanai"></span><h2>Steering as an AI<a class="headerlink" href="#steering-as-an-ai" title="Permalink to this headline">¶</a></h2>
@@ -203,7 +203,7 @@ implement an NPC whose only AI behavior is a <a class="reference internal" href=
         <span class="n">img</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
         <span class="c1"># Draw the circle</span>
         <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">RED</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="c1"># Call GameObejct init with appropiate values</span>
+        <span class="c1"># Call GameObject init with appropiate values</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CircleNPC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">img_surf</span> <span class="o">=</span> <span class="n">img</span><span class="p">,</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">,</span>
@@ -225,7 +225,7 @@ implement an NPC whose only AI behavior is a <a class="reference internal" href=
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>The image is a circle</p></li>
-<li><p>The update actually generates it’s own steering</p></li>
+<li><p>The update actually generates its own steering</p></li>
 </ol>
 </div></blockquote>
 <p>The way that point (2) is achieved is by calling the <a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a>’s
@@ -241,7 +241,7 @@ methods later.</p>
 only of one input-controlled player and one NPC that chases the player.</p>
 <p>First we need to see how to make the player input-controlled, for that
 we need to create an artificial <a class="reference internal" href="kinematic.html#steering.kinematic.SteeringOutput" title="steering.kinematic.SteeringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">SteeringOutput</span></code></a>
-that we can modify, lets add that:</p>
+that we can modify, let’s add that:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># . . .</span>
 
 <span class="c1"># Variables that you will use in your game loop</span>
@@ -312,7 +312,7 @@ created. We will also need to instantiate the <strong>CircleNPC</strong> class a
 
     <span class="c1"># . . .</span>
 
-    <span class="c1"># Erease previous frame by bliting background</span>
+    <span class="c1"># Erase previous frame by bliting background</span>
     <span class="n">screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">background</span><span class="o">.</span><span class="n">get_rect</span><span class="p">())</span>
 
     <span class="c1"># Update player and NPCs</span>
@@ -326,17 +326,17 @@ created. We will also need to instantiate the <strong>CircleNPC</strong> class a
     <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Apart from instantiating the <strong>CircleNPC</strong> we changed it’s ai property to be
+<p>Apart from instantiating the <strong>CircleNPC</strong> we changed its <strong>ai</strong> property to be
 <a class="reference internal" href="kinematic.html#steering.kinematic.Arrive" title="steering.kinematic.Arrive"><code class="xref py py-class docutils literal notranslate"><span class="pre">Arrive</span></code></a>, this will make the NPC arrive near the
 player and then stop accelerating, We also added the code neccesary to
 blit our entity’s images to the screen.</p>
 <p>If you were to run this code now, it should run propperly, you should
 see the player in the center of the screen and the NPC chasing the player,
 the problem is, if you try to move the player, well… it won’t stop moving.
-That is because when we <a class="reference internal" href="gameobject.html#gameobject.GameObject.steer" title="gameobject.GameObject.steer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">steer()</span></code></a> the player it’s
-velocity increases, and since we are moving it’s position
-based on it’s velocity, it will never stop moving (unless you steer it correctly
-to negate it’s current velocity). The NPC will also never stop beside
+That is because when we <a class="reference internal" href="gameobject.html#gameobject.GameObject.steer" title="gameobject.GameObject.steer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">steer()</span></code></a> the player its
+velocity increases, and since we are moving its position
+based on its velocity, it will never stop moving (unless you steer it correctly
+to negate its current velocity). The NPC will also never stop beside
 the player as it should.</p>
 </div>
 <div class="section" id="drag">
@@ -344,11 +344,11 @@ the player as it should.</p>
 <p>To avoid this behavior we need to apply some sort of <strong>Drag</strong> to our
 entities, luckily, I’ve implemented a <a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a>
 that does just that, enter <a class="reference internal" href="kinematic.html#steering.kinematic.Drag" title="steering.kinematic.Drag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Drag</span></code></a>.</p>
-<p>The only thing particular to this behavior is that you will not normally
+<p>The only particular thing about this behavior is that you will not normally
 create an individual instance for every entity, instead you should create
-one for every <em>surface</em> or <em>environemnt</em> your entity is in. This is because
+one for every <em>surface</em> or <em>environment</em> your entity is in. This is because
 an entity will have less drag trying to run in plain land than trying to
-run with it’s body half-submerged in water.</p>
+run with its body half-submerged in water.</p>
 <p>For this example we are using only one instance of <a class="reference internal" href="kinematic.html#steering.kinematic.Drag" title="steering.kinematic.Drag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Drag</span></code></a> and
 applying it to all entities, but you can get creative.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># . . .</span>
@@ -361,7 +361,7 @@ applying it to all entities, but you can get creative.</p>
 
     <span class="c1"># . . .</span>
 
-    <span class="c1"># Erease previous frame by bliting background</span>
+    <span class="c1"># Erase previous frame by bliting background</span>
     <span class="n">screen</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="n">background</span><span class="o">.</span><span class="n">get_rect</span><span class="p">())</span>
 
     <span class="c1"># Update player and NPCs</span>
@@ -392,7 +392,7 @@ is the <a class="reference internal" href="path.html#steering.path.Path" title="
 <span id="id3"></span><h2>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h2>
 <p>You can create very light-weight paths using the <a class="reference internal" href="path.html#steering.path.Path" title="steering.path.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> class,
 the only “problem” is that the paths are defined as mathematic functions,
-for people unfamiliar with that it can be quiet spooky, and I would recommend them
+for people unfamiliar with that it can be quite spooky, and I would recommend them
 to use the pre-implemented paths. Otherwise it is very easy to define paths
 with this class, let’s define a very simple cosine-wave-shaped path and
 make an NPC follow it:</p>
@@ -420,11 +420,11 @@ make an NPC follow it:</p>
 </pre></div>
 </div>
 <p>And that is it, the <a class="reference internal" href="path.html#steering.path.Path" title="steering.path.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> class handles everything, you just
-need to specify the function, it’s domain and a discrete increment (for each
+need to specify the function, its domain and a discrete increment (for each
 point to be generated).</p>
 <p>Now we need to put it into the game, let’s create another NPC instance
-and assign <a class="reference internal" href="kinematic.html#steering.kinematic.FollowPath" title="steering.kinematic.FollowPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">FollowPath</span></code></a> with our <strong>PathCosine</strong> to it’s
-ai behavior.</p>
+and assign <a class="reference internal" href="kinematic.html#steering.kinematic.FollowPath" title="steering.kinematic.FollowPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">FollowPath</span></code></a> with our <strong>PathCosine</strong> to its
+AI behavior.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># . . .</span>
 
 <span class="c1"># Instantiate game objects</span>
@@ -473,9 +473,9 @@ and <a class="reference internal" href="path.html#steering.path.MirroredPath" ti
 <div class="section" id="other-behaviors">
 <span id="otherbehaviors"></span><h2>Other Behaviors<a class="headerlink" href="#other-behaviors" title="Permalink to this headline">¶</a></h2>
 <p>Finally, this library also implements a couple different kinds of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior`s</span> <span class="pre">which</span> <span class="pre">are</span> <span class="pre">:py:class:`BlendedSteering</span></code>
-and <code class="xref py py-class docutils literal notranslate"><span class="pre">PrioritySteering</span></code>. These allow you to combine different
-basic behaviors te create more complicated ones, take a look at the
+<a class="reference internal" href="kinematic.html#steering.kinematic.KinematicSteeringBehavior" title="steering.kinematic.KinematicSteeringBehavior"><code class="xref py py-class docutils literal notranslate"><span class="pre">KinematicSteeringBehavior</span></code></a>s which are <a class="reference internal" href="blended.html#steering.blended.BlendedSteering" title="steering.blended.BlendedSteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlendedSteering</span></code></a>
+and <a class="reference internal" href="priority.html#steering.priority.PrioritySteering" title="steering.priority.PrioritySteering"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrioritySteering</span></code></a>. These allow you to combine different
+basic behaviors to create more complicated ones, take a look at the
 pre-implemented behaviors to see what is possible by using those.</p>
 </div>
 <div class="section" id="gravity">
@@ -485,7 +485,7 @@ won’t consider it a feature), there are a couple of things we need to
 consider when adding gravity into our game, but here I’ll show a very
 basic NPC that has gravity applied.</p>
 <p>First, if we are going to have falling entities, we need to make sure
-they dont fall off-screen. for that we can add a very simple check to make
+they don’t fall off-screen. for that we can add a very simple check to make
 sure nothing moves under the screen:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># . . .</span>
 
@@ -522,7 +522,7 @@ let’s make that an NPC:</p>
         <span class="n">img</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
         <span class="c1"># Draw the circle</span>
         <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">RED</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
-        <span class="c1"># Call GameObejct init with appropiate values</span>
+        <span class="c1"># Call GameObject init with appropiate values</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GravityCircleNPC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">img_surf</span> <span class="o">=</span> <span class="n">img</span><span class="p">,</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">,</span>
@@ -654,7 +654,7 @@ not directly related to the library.</p>
 <li class="toctree-l1"><a class="reference internal" href="priority.html">Priority</a></li>
 <li class="toctree-l1"><a class="reference internal" href="path.html">Path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_game.html">Example Game</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Pygame AI Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PyGame AI Guide</a></li>
 </ul>
 
 <div class="relations">

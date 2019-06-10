@@ -4,7 +4,7 @@ PyGame AI Guide
 ===============
 
 This guide is meant to explain the basic concepts you need to know to 
-integrate this library into your game, it is not meant to explain how to
+integrate this library into your game; it is not meant to explain how to
 create games with PyGame, although it does include a very basic game 
 structure that you can use as a template.
 
@@ -100,9 +100,9 @@ Game Objects
 I used the word *entities* before, by that I mean all the moving things
 in your game, like the player, enemies, NPCs, you name it. The way these
 entities will be better represented (and the only way they should be, 
-unless you really know what you're doing) in a game that uses this libray is
+unless you really know what you're doing) in a game that uses this library is
 by using the :py:class:`~.GameObject` class, it contains all the 
-neccesary properties and methods the library uses to do all it's calculations.
+necessary properties and methods the library uses to do all it's calculations.
 
 The way you create your own entities is by subclassing :py:class:`~.GameObject`
 like this:
@@ -125,14 +125,14 @@ like this:
                 max_angular_accel = 30
             )
             
-Note that the first thing I do is create a :pgsurf:`Surface`, this is the
+Note that the first thing I do is create a :pgsurf:`Surface`; this is the
 image that will be displayed in the game, in this case it is a blue rectangle.
-Also note that we hand picked most of the parameters for the :py:class:`~.GameObject`,
-this is unfortunately still done trough trial and error, the values that I
+Also note that we hand picked most of the parameters for the :py:class:`~.GameObject`;
+this is unfortunately still done through trial and error, the values that I
 used work sort of smoothly but they can be improved.
 
-Now, that is not enough to call it done, we still need to implement a way for
-this entity to move, this is usually done trough an **update** function, in fact,
+Now, that is not enough to call it done; we still need to implement a way for
+this entity to move, this is usually done through an **update** function, in fact,
 every :py:class:`~.GameObject` has one, but it doesn't do anything.
 
 This is an example Player with its update function:
@@ -159,22 +159,22 @@ This is an example Player with its update function:
             self.steer(steering, tick)
             self.rect.move_ip(self.velocity)
             
-Esentially what it does is to **accelerate** the entity in the direction
-and strength dictated by the **steering** parameter, and then move the
-entity's rect with the direction and stregth of the entity's **velocity**.
+Essentially what it does is to **accelerate** the entity in the direction
+and strength dictated by the **steering** parameter and then move the
+entity's rect with the direction and strength of the entity's **velocity**.
 
 .. _Steering:
 
 Steering
 --------
 
-*Steering Algorithms* are the core of movement in this library, the
-:py:class:`~.kinematic.SteeringOutput` is the way these algorithms comunicate how
-an object should **accelerate** in order to achieve it's goal.
+*Steering Algorithms* are the core of movement in this library; the
+:py:class:`~.kinematic.SteeringOutput` is the way these algorithms communicate how
+an object should **accelerate** in order to achieve its goal.
 
-In the previous example we saw that the player does not produce it's 
-own steering, that is because normally the player is controled by
-user input, we'll see later how we can create and modify our own 
+In the previous example we saw that the player does not produce its 
+own steering, that is because normally the player is controlled by
+user input; we'll see later how we can create and modify our own 
 :py:class:`SteeringOutput` to move the player, for now let's
 move  on and actually implement something useful with this library.
 
@@ -217,11 +217,11 @@ implement an NPC whose only AI behavior is a :py:class:`~.KinematicSteeringBehav
 The main differences between this and the **Player** entity are that:
 
     1) The image is a circle
-    2) The update actually generates it's own steering
+    2) The update actually generates its own steering
     
 The way that point (2) is achieved is by calling the :py:class:`~.KinematicSteeringBehavior`'s
-:py:meth:`~.KinematicSteeringBehavior.get_steering` method, this returns
-the behaviors' :py:class:`~.kinematic.SteeringOutput`, it is then applied to the
+:py:meth:`~.KinematicSteeringBehavior.get_steering` method; this returns
+the behaviors' :py:class:`~.kinematic.SteeringOutput`; it is then applied to the
 :py:class:`~.GameObject` with the :py:meth:`~.GameObject.steer` method.
 This is not the only steering method that exists, we will see more about these
 methods later.
@@ -231,12 +231,12 @@ methods later.
 Very Simple Game
 ----------------
 
-With all we have learned so far we can make a very simple game that consists
+With all we have learned so far, we can make a very simple game that consists
 only of one input-controlled player and one NPC that chases the player.
 
 First we need to see how to make the player input-controlled, for that
 we need to create an artificial :py:class:`~.kinematic.SteeringOutput`
-that we can modify, lets add that:
+that we can modify, let's add that:
 
 .. code-block:: python
 
@@ -329,18 +329,18 @@ created. We will also need to instantiate the **CircleNPC** class and do the sam
         
         pygame.display.update()
 
-Apart from instantiating the **CircleNPC** we changed it's ai property to be
+Apart from instantiating the **CircleNPC** we changed its **ai** property to be
 :py:class:`~.kinematic.Arrive`, this will make the NPC arrive near the
-player and then stop accelerating, We also added the code neccesary to 
+player and then stop accelerating, We also added the code necessary to 
 blit our entity's images to the screen.
  
-If you were to run this code now, it should run propperly, you should 
+If you were to run this code now, it should run properly, you should 
 see the player in the center of the screen and the NPC chasing the player,
 the problem is, if you try to move the player, well... it won't stop moving.
-That is because when we :py:meth:`~.GameObject.steer` the player it's 
-velocity increases, and since we are moving it's position
-based on it's velocity, it will never stop moving (unless you steer it correctly 
-to negate it's current velocity). The NPC will also never stop beside
+That is because when we :py:meth:`~.GameObject.steer` the player its 
+velocity increases, and since we are moving its position
+based on its velocity, it will never stop moving (unless you steer it correctly 
+to negate its current velocity). The NPC will also never stop beside
 the player as it should.
 
 .. _Drag:
@@ -352,11 +352,11 @@ To avoid this behavior we need to apply some sort of **Drag** to our
 entities, luckily, I've implemented a :py:class:`~.KinematicSteeringBehavior`
 that does just that, enter :py:class:`~.Drag`.
 
-The only thing particular to this behavior is that you will not normally
+The only particular thing about this behavior is that you will not normally
 create an individual instance for every entity, instead you should create
 one for every *surface* or *environment* your entity is in. This is because
 an entity will have less drag trying to run in plain land than trying to 
-run with it's body half-submerged in water.
+run with its body half-submerged in water.
 
 For this example we are using only one instance of :py:class:`~.Drag` and
 applying it to all entities, but you can get creative.
@@ -392,7 +392,7 @@ applying it to all entities, but you can get creative.
         
 Now you will be able to run the code and it should behave as expected.
 Note that you can totally add the drag instructions in your entity's
-**update** function to make the code less cluttered, I just added it 
+**update** function to make the code less cluttered; I just added it 
 there to avoid having to pass it as an argument or putting it
 inside the class.
 
@@ -409,7 +409,7 @@ You can create very light-weight paths using the :py:class:`~.Path` class,
 the only "problem" is that the paths are defined as mathematic functions,
 for people unfamiliar with that it can be quite spooky, and I would recommend them
 to use the pre-implemented paths. Otherwise it is very easy to define paths
-with this class, let's define a very simple cosine-wave-shaped path and 
+with this class; let's define a very simple cosine-wave-shaped path and 
 make an NPC follow it:
 
 .. code-block:: python
@@ -437,12 +437,12 @@ make an NPC follow it:
             )
             
 And that is it, the :py:class:`~.Path` class handles everything, you just
-need to specify the function, it's domain and a discrete increment (for each
+need to specify the function, its domain and a discrete increment (for each
 point to be generated).
 
 Now we need to put it into the game, let's create another NPC instance
-and assign :py:class:`~.FollowPath` with our **PathCosine** to it's
-ai behavior.
+and assign :py:class:`~.FollowPath` with our **PathCosine** to its
+AI behavior.
 
 .. code-block:: python
 
@@ -497,11 +497,11 @@ and :py:class:`~.MirroredPath` for special Path implementations.
 Other Behaviors
 ---------------
 
-Finally, this library also implements a couple different kinds of 
-:py:class:`KinematicSteeringBehavior`s which are :py:class:`BlendedSteering`
-and :py:class:`PrioritySteering`. These allow you to combine different
-basic behaviors to create more complicated ones, take a look at the
-pre-implemented behaviors to see what is possible by using those.
+Finally, this library also implements a couple of different kinds of 
+:py:class:`~.KinematicSteeringBehavior`\ s which are :py:class:`~.BlendedSteering`
+and :py:class:`~.PrioritySteering`. These allow you to combine different
+basic behaviors to create more complicated ones. Take a look at the
+pre-implemented behaviors to see what is possible by trying them out.
 
 .. _Gravity:
 
@@ -509,19 +509,19 @@ Gravity
 -------
 
 Many games include gravity as a core feature (so core that most people
-won't consider it a feature), there are a couple of things we need to
+won't consider it a feature). There are a couple of things we need to
 consider when adding gravity into our game, but here I'll show a very
 basic NPC that has gravity applied.
 
 First, if we are going to have falling entities, we need to make sure 
-they don't fall off-screen. for that we can add a very simple check to make
+they don't fall off-screen. For that we can add a very simple check to make
 sure nothing moves under the screen:
 
 .. code-block:: python
 
     # . . .
     
-    # Entities afected by gravity
+    # Entities affected by gravity
     gravity_entities = []
     
     # . . .
@@ -584,14 +584,14 @@ let's make that an NPC:
             self.rect.move_ip(velocity)
             
 The only difference between this and the regular **CircleNPC** is in the
-**update** function, in this one we create a :py:class:`~.kinematic.SteeringOutput`
-to act as the **gravity**, we then only consider the AI steering along the x axis,
-finally we get a total **velocity** composed of the NPC velocity
+**update** function; in this one we create a :py:class:`~.kinematic.SteeringOutput`
+to act as the **gravity**; we then only consider the AI steering along the x axis,
+finally we get a total **velocity** composed of the NPC's velocity
 plus the velocity induced by gravity. This way we separate the velocity
 produced by the actual NPC from the one produced by any external force
 (in this case gravity).
 
-Now we only need to instantiate this NPC and do all neccesary actions to 
+Now we only need to instantiate this NPC and do all necessary actions to 
 have it function like the rest of the entities (add it to the
 gravity entities list, assign it an AI behavior, update, blit and apply drag).
 
@@ -660,7 +660,7 @@ More Complex Stuff
 ------------------
 
 This was a very simple game to show the basic concepts that this library
-uses, you can download the game `here <https://mega.nz/#!OpVlDazC!SBJqassdKXwJ_wOzxSfutcbICtefpZ1jRR-5Ksjh2S4>`_. 
+uses. You can download the game `here <https://mega.nz/#!OpVlDazC!SBJqassdKXwJ_wOzxSfutcbICtefpZ1jRR-5Ksjh2S4>`_. 
 You only need to run main.py while having pygame and pygame_ai installed.
 
 If you are interested in knowing what else you can do with this library

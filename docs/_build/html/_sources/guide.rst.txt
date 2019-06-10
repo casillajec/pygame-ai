@@ -1,6 +1,6 @@
 .. _guide:
 
-Pygame AI Guide
+PyGame AI Guide
 ===============
 
 This guide is meant to explain the basic concepts you need to know to 
@@ -28,7 +28,7 @@ Game Structure
 --------------
 
 This is the basic game structure that I'll be working with in this guide,
-it contains te basic things that any PyGame game shuold have.
+it contains the basic things that any PyGame game should have.
 
 .. code-block:: python
     
@@ -73,7 +73,7 @@ it contains te basic things that any PyGame game shuold have.
                 if event.type == QUIT:
                     sys.exit(2)
             
-            # Erease previous frame by bliting background
+            # Erase previous frame by bliting background
             screen.blit(background, background.get_rect())
             
             # Update the entities in your game
@@ -115,7 +115,7 @@ like this:
             # First we create the image by filling a surface with blue color
             img = pygame.Surface( (10, 15) ).convert()
             img.fill(BLUE)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(Player, self).__init__(
                 img_surf = img,
                 pos = pos,
@@ -135,7 +135,7 @@ Now, that is not enough to call it done, we still need to implement a way for
 this entity to move, this is usually done trough an **update** function, in fact,
 every :py:class:`~.GameObject` has one, but it doesn't do anything.
 
-This is an example Player with it's update function:
+This is an example Player with its update function:
 
 .. code-block:: python
 
@@ -145,7 +145,7 @@ This is an example Player with it's update function:
             # First we create the image by filling a surface with blue color
             img = pygame.Surface( (10, 15) ).convert()
             img.fill(BLUE)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(Player, self).__init__(
                 img_surf = img,
                 pos = pos,
@@ -170,13 +170,13 @@ Steering
 
 *Steering Algorithms* are the core of movement in this library, the
 :py:class:`~.kinematic.SteeringOutput` is the way these algorithms comunicate how
-an object should **accelerate** in order to achieve it's goal.
+an object should **accelerate** in order to achieve its goal.
 
-In the previous example we saw that they player does not produce it's 
+In the previous example we saw that the player does not produce its 
 own steering, that is because normally the player is controled by
 user input, we'll see later how we can create and modify our own 
-:py:class:`SteeringOutput` to create interesting effects, for now let's
-move to actually implementing something useful with this library.
+:py:class:`SteeringOutput` to move the player, for now let's
+move  on and actually implement something useful with this library.
 
 .. _SteeringAsAnAI:
 
@@ -197,7 +197,7 @@ implement an NPC whose only AI behavior is a :py:class:`~.KinematicSteeringBehav
             img.fill( (255, 255, 255, 0) )
             # Draw the circle
             pygame.draw.circle(img, RED, (5, 5), 5)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(CircleNPC, self).__init__(
                 img_surf = img,
                 pos = pos,
@@ -217,7 +217,7 @@ implement an NPC whose only AI behavior is a :py:class:`~.KinematicSteeringBehav
 The main differences between this and the **Player** entity are that:
 
     1) The image is a circle
-    2) The update actually generates it's own steering
+    2) The update actually generates its own steering
     
 The way that point (2) is achieved is by calling the :py:class:`~.KinematicSteeringBehavior`'s
 :py:meth:`~.KinematicSteeringBehavior.get_steering` method, this returns
@@ -236,7 +236,7 @@ only of one input-controlled player and one NPC that chases the player.
 
 First we need to see how to make the player input-controlled, for that
 we need to create an artificial :py:class:`~.kinematic.SteeringOutput`
-that we can modify, lets add that:
+that we can modify, let's add that:
 
 .. code-block:: python
 
@@ -316,7 +316,7 @@ created. We will also need to instantiate the **CircleNPC** class and do the sam
     
         # . . .
         
-        # Erease previous frame by bliting background
+        # Erase previous frame by bliting background
         screen.blit(background, background.get_rect())
         
         # Update player and NPCs
@@ -329,7 +329,7 @@ created. We will also need to instantiate the **CircleNPC** class and do the sam
         
         pygame.display.update()
 
-Apart from instantiating the **CircleNPC** we changed it's ai property to be
+Apart from instantiating the **CircleNPC** we changed its **ai** property to be
 :py:class:`~.kinematic.Arrive`, this will make the NPC arrive near the
 player and then stop accelerating, We also added the code neccesary to 
 blit our entity's images to the screen.
@@ -337,10 +337,10 @@ blit our entity's images to the screen.
 If you were to run this code now, it should run propperly, you should 
 see the player in the center of the screen and the NPC chasing the player,
 the problem is, if you try to move the player, well... it won't stop moving.
-That is because when we :py:meth:`~.GameObject.steer` the player it's 
-velocity increases, and since we are moving it's position
-based on it's velocity, it will never stop moving (unless you steer it correctly 
-to negate it's current velocity). The NPC will also never stop beside
+That is because when we :py:meth:`~.GameObject.steer` the player its 
+velocity increases, and since we are moving its position
+based on its velocity, it will never stop moving (unless you steer it correctly 
+to negate its current velocity). The NPC will also never stop beside
 the player as it should.
 
 .. _Drag:
@@ -352,11 +352,11 @@ To avoid this behavior we need to apply some sort of **Drag** to our
 entities, luckily, I've implemented a :py:class:`~.KinematicSteeringBehavior`
 that does just that, enter :py:class:`~.Drag`.
 
-The only thing particular to this behavior is that you will not normally
+The only particular thing about this behavior is that you will not normally
 create an individual instance for every entity, instead you should create
-one for every *surface* or *environemnt* your entity is in. This is because
+one for every *surface* or *environment* your entity is in. This is because
 an entity will have less drag trying to run in plain land than trying to 
-run with it's body half-submerged in water.
+run with its body half-submerged in water.
 
 For this example we are using only one instance of :py:class:`~.Drag` and
 applying it to all entities, but you can get creative.
@@ -373,7 +373,7 @@ applying it to all entities, but you can get creative.
     
         # . . .
         
-        # Erease previous frame by bliting background
+        # Erase previous frame by bliting background
         screen.blit(background, background.get_rect())
         
         # Update player and NPCs
@@ -407,7 +407,7 @@ Paths
 
 You can create very light-weight paths using the :py:class:`~.Path` class,
 the only "problem" is that the paths are defined as mathematic functions,
-for people unfamiliar with that it can be quiet spooky, and I would recommend them
+for people unfamiliar with that it can be quite spooky, and I would recommend them
 to use the pre-implemented paths. Otherwise it is very easy to define paths
 with this class, let's define a very simple cosine-wave-shaped path and 
 make an NPC follow it:
@@ -437,12 +437,12 @@ make an NPC follow it:
             )
             
 And that is it, the :py:class:`~.Path` class handles everything, you just
-need to specify the function, it's domain and a discrete increment (for each
+need to specify the function, its domain and a discrete increment (for each
 point to be generated).
 
 Now we need to put it into the game, let's create another NPC instance
-and assign :py:class:`~.FollowPath` with our **PathCosine** to it's
-ai behavior.
+and assign :py:class:`~.FollowPath` with our **PathCosine** to its
+AI behavior.
 
 .. code-block:: python
 
@@ -498,9 +498,9 @@ Other Behaviors
 ---------------
 
 Finally, this library also implements a couple different kinds of 
-:py:class:`KinematicSteeringBehavior`s which are :py:class:`BlendedSteering`
-and :py:class:`PrioritySteering`. These allow you to combine different
-basic behaviors te create more complicated ones, take a look at the
+:py:class:`~.KinematicSteeringBehavior`\ s which are :py:class:`~.BlendedSteering`
+and :py:class:`~.PrioritySteering`. These allow you to combine different
+basic behaviors to create more complicated ones, take a look at the
 pre-implemented behaviors to see what is possible by using those.
 
 .. _Gravity:
@@ -514,7 +514,7 @@ consider when adding gravity into our game, but here I'll show a very
 basic NPC that has gravity applied.
 
 First, if we are going to have falling entities, we need to make sure 
-they dont fall off-screen. for that we can add a very simple check to make
+they don't fall off-screen. for that we can add a very simple check to make
 sure nothing moves under the screen:
 
 .. code-block:: python
@@ -556,7 +556,7 @@ let's make that an NPC:
             img.fill( (255, 255, 255, 0) )
             # Draw the circle
             pygame.draw.circle(img, RED, (5, 5), 5)
-            # Call GameObejct init with appropiate values
+            # Call GameObject init with appropiate values
             super(GravityCircleNPC, self).__init__(
                 img_surf = img,
                 pos = pos,

@@ -191,7 +191,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">CyclicPath</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path_func</span><span class="p">,</span> <span class="n">domain_end</span><span class="p">,</span> <span class="n">domain_start</span><span class="p">,</span> <span class="n">increment</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_end</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
         
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">CyclicPath</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span></div>
@@ -325,7 +325,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../priority.html">Priority</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../path.html">Path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../example_game.html">Example Game</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../guide.html">Pygame AI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../guide.html">PyGame AI Guide</a></li>
 </ul>
 
 <div class="relations">
